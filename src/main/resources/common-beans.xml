@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:component-scan base-package="org.hillel.config"/>
+
+<!--    <bean class="org.hillel.service.TicketClient">-->
+<!--        <constructor-arg name="journeyService" ref="inMemoryJourneyService"/>-->
+<!--    </bean>-->
+
+<!--    <bean id="inMemoryJourneyService"-->
+<!--          class="org.hillel.service.InMemoryJourneyServiceImpl">-->
+<!--        <constructor-arg name="text" value="3"/>-->
+<!--    </bean>-->
+
+<!--    <bean name="stub" class="org.hillel.service.StubJourneyServiceImpl"/>-->
+</beans>

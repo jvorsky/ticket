@@ -6,7 +6,8 @@
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
 
-    <context:component-scan base-package="org.hillel.config"/>
+<!--    <context:property-placeholder location="application.properties"/>-->
+    <context:component-scan base-package="org.hillel"/>
 
 <!--    <bean class="org.hillel.service.TicketClient">-->
 <!--        <constructor-arg name="journeyService" ref="inMemoryJourneyService"/>-->

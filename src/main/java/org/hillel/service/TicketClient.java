@@ -2,6 +2,7 @@ package org.hillel.service;
 
 import org.hillel.Journey;
 import org.hillel.persistence.entity.JourneyEntity;
+import org.hillel.persistence.entity.StopEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -25,6 +26,9 @@ public class TicketClient {
     private TransactionalJourneyService journeyService;
 
     @Autowired
+    private TransactionalStopService stopService;
+
+    @Autowired
     private Environment environment;
 
     @Value("${datasource.url}")
@@ -35,6 +39,10 @@ public class TicketClient {
 
     public Long createJourney(final JourneyEntity journeyEntity){
         return journeyService.createJourney(journeyEntity);
+    }
+
+    public Long createStop(final StopEntity stopEntity){
+        return stopService.create(stopEntity);
     }
 
     public Collection<Journey> find(String stationFrom, String stationTo, LocalDate dateFrom, LocalDate dateTo) throws Exception {

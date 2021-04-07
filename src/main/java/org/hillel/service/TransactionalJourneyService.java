@@ -15,12 +15,12 @@ public class TransactionalJourneyService {
     private JourneyRepository journeyRepository;
 
     @Transactional
-    public Long createJourney(final JourneyEntity entity){
-        return journeyRepository.create(entity);
+    public JourneyEntity createOrUpdate(final JourneyEntity entity){
+        return journeyRepository.createOrUpdate(entity);
     }
 
     @Transactional(readOnly = true)
-    public Optional<JourneyEntity> getById(Long id, boolean withDependencies) {
+    public Optional<JourneyEntity> findById(Long id, boolean withDependencies) {
         final Optional<JourneyEntity> byId = journeyRepository.findById(id);
         if (withDependencies && byId.isPresent()){
             byId.get().getVehicle().getName();
@@ -29,10 +29,4 @@ public class TransactionalJourneyService {
         return byId;
     }
 
-    @Transactional
-    public void save(JourneyEntity journey) {
-        final JourneyEntity save = journeyRepository.save(journey);
-        save.setStationTo("station to");
-
-    }
 }

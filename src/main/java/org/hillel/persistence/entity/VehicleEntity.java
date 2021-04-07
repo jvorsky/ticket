@@ -27,7 +27,7 @@ public class VehicleEntity extends AbstractModifyEntity<Long>{
         }
         if (journey != null){
             journeys.add(journey);
-            journey.addVehicle(this);
+            journey.setVehicle(this);
         }
     }
 

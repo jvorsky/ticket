@@ -12,11 +12,11 @@ import java.time.Instant;
 @Getter
 @Setter
 @MappedSuperclass
-public abstract class AbstractModifyEntity<D extends Serializable> {
+public abstract class AbstractModifyEntity<ID extends Serializable> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private D id;
+    private ID id;
 
     @Column(name = "create_date")
     @CreationTimestamp

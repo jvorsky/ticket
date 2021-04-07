@@ -1,7 +1,9 @@
 package org.hillel.service;
 
 import org.hillel.persistence.entity.JourneyEntity;
+import org.hillel.persistence.entity.SeatInfoEntity;
 import org.hillel.persistence.entity.StopEntity;
+import org.hillel.persistence.entity.VehicleEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -23,6 +25,12 @@ public class TicketClient {
     private TransactionalStopService stopService;
 
     @Autowired
+    private TransactionalSeatInfoService seatInfoService;
+
+    @Autowired
+    private TransactionalVehicleService vehicleService;
+
+    @Autowired
     private Environment environment;
 
     @Value("${datasource.url}")
@@ -31,19 +39,23 @@ public class TicketClient {
     public TicketClient(){
     }
 
-    public Long createJourney(final JourneyEntity journeyEntity){
-        return journeyService.createJourney(journeyEntity);
+    public JourneyEntity createOrUpdateJourney(JourneyEntity journey) {
+        return journeyService.createOrUpdate(journey);
     }
 
-    public Optional<JourneyEntity> getJourneyById(Long id, boolean withDependencies){
-        return id == null ? Optional.empty() : journeyService.getById(id, withDependencies);
+    public Optional<JourneyEntity> findJourneyById(Long id, boolean withDependencies){
+        return id == null ? Optional.empty() : journeyService.findById(id, withDependencies);
     }
 
-    public Long createStop(final StopEntity stopEntity){
-        return stopService.create(stopEntity);
+    public StopEntity createOrUpdateStop(StopEntity stopEntity){
+        return stopService.createOrUpdate(stopEntity);
     }
 
-    public void saveJourney(JourneyEntity journey) {
-        journeyService.save(journey);
+    public SeatInfoEntity createOrUpdateSeatInfo(SeatInfoEntity seatInfo) {
+        return seatInfoService.createOrUpdate(seatInfo);
+    }
+
+    public VehicleEntity createOrUpdateVechicle(VehicleEntity vehicle) {
+        return vehicleService.createOrUpdate(vehicle);
     }
 }

@@ -40,20 +40,25 @@ public class JourneyEntity extends AbstractModifyEntity<Long> {
     @JoinColumn(name = "vehicle_id")
     private VehicleEntity vehicle;
 
-    public void addVehicle(final VehicleEntity vehicle){
-        this.vehicle = vehicle;
-    }
-
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(name = "journey_stop", indexes = @Index(name = "journey_stop_idx", columnList = "journey_id, stop_id"),
             joinColumns = @JoinColumn(name = "journey_id"),
             inverseJoinColumns = @JoinColumn(name = "stop_id"))
     private List<StopEntity> stops = new ArrayList<>();
 
+    @OneToMany(mappedBy = "journey", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    private List<SeatInfoEntity> seatInfos = new ArrayList<>();
+
     public void addStop(final StopEntity stop){
         if (stop == null) return;
         if (stops == null) stops = new ArrayList<>();
         stops.add(stop);
+    }
+
+    public void addSeatInfo(SeatInfoEntity seatInfo){
+        if (seatInfo == null) return;
+        if (seatInfos == null) seatInfos = new ArrayList<>();
+        seatInfos.add(seatInfo);
     }
 
     @Override

@@ -8,46 +8,88 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.time.Instant;
+import java.time.LocalDate;
 
 public class Starter {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         final ApplicationContext context = new AnnotationConfigApplicationContext(RootConfig.class);
-        //final ApplicationContext context = new ClassPathXmlApplicationContext("common-beans.xml");
-        System.out.println("after init");
-
         TicketClient ticketClient = context.getBean(TicketClient.class);
 
-        JourneyEntity journeyEntity = new JourneyEntity();
-        journeyEntity.setStationFrom("Odessa");
-        journeyEntity.setStationTo("Kiev");
-        journeyEntity.setDateFrom(Instant.now());
-        journeyEntity.setDateTo(Instant.now());
-        journeyEntity.setDirection(DirectionType.UNKNOWN);
-        journeyEntity.setActive(false);
+        // Создадим маршрут с остановками
+        JourneyEntity journey = buildJourney("Odessa", "Kiev", Instant.now(), Instant.now().plusSeconds(1000));
 
-        final VehicleEntity vehicleEntity = new VehicleEntity();
-        vehicleEntity.setName("bus1");
-        journeyEntity.addVehicle(vehicleEntity);
+        journey.addStop(buildStop("Одесса-Главная", "Одесса", LocalDate.parse("1980-12-03"), "", 1D, 2D));
+        journey.addStop(buildStop("Подольск", "Подольск", LocalDate.parse("1980-12-03"), "", 1D, 2D));
+        journey.addStop(buildStop("Вапнярка", "Вапнярка", LocalDate.parse("1980-12-03"), "", 5D, 2D));
+        journey.addStop(buildStop("Жмеринка", "Жмеринка", LocalDate.parse("1980-12-03"), "", 7D, 2D));
+        journey.addStop(buildStop("Винница", "Винница", LocalDate.parse("1980-12-03"), "", 7D, 2D));
+        journey.addStop(buildStop("Киев-Пасс.", "Киев", LocalDate.parse("1980-12-03"), "", 1D, 2D));
+        ticketClient.createOrUpdateJourney(journey);
 
-        StopAddInfoEntity stopAddInfoEntity = new StopAddInfoEntity();
-        stopAddInfoEntity.setLatitude(11.0);
-        stopAddInfoEntity.setLongitude(1.3);
+        // Создадим два транспортных средства
+        VehicleEntity trainVehicle = buildVehicle("Интерсити");
+        VehicleEntity busVehicle = buildVehicle("Автолюкс");
+        ticketClient.createOrUpdateVechicle(trainVehicle);
+        ticketClient.createOrUpdateVechicle(busVehicle);
 
-        StopEntity stopEntity = new StopEntity();
-        stopEntity.addAddInfo(stopAddInfoEntity);
-        stopEntity.setCommonInfo(new CommonInfo());
-        journeyEntity.addStop(stopEntity);
+        // Укажем кол-во свободных месть для поезда
+        SeatInfoEntity seatInfo1 = buildSeatInfo(journey, trainVehicle, 120);
+        // Укажем кол-во свободных месть для автобуса
+        SeatInfoEntity seatInfo2 = buildSeatInfo(journey, busVehicle, 5);
+        journey.addSeatInfo(seatInfo1);
+        journey.addSeatInfo(seatInfo2);
+        ticketClient.createOrUpdateJourney(journey);
 
-        ticketClient.createJourney(journeyEntity);
-        System.out.println("create journey with id " + journeyEntity.getId());
+        // уменьшим кол-во мест в автобусе
+        seatInfo1.setFreeSeats(100);
+        ticketClient.createOrUpdateSeatInfo(seatInfo1);
 
-        final JourneyEntity journey = ticketClient.getJourneyById(journeyEntity.getId(), true).get();
-        System.out.println("find journey by id " + journey);
-        System.out.println("get all stops by journey " + journey.getStops());
+    }
 
+    private static JourneyEntity buildJourney(final String from, final String to,
+                                              final Instant dateFrom, final Instant dateTo){
+        final JourneyEntity journey = new JourneyEntity();
+        journey.setStationFrom(from);
+        journey.setStationTo(to);
+        journey.setDateFrom(dateFrom);
+        journey.setDateTo(dateTo);
         journey.setDirection(DirectionType.TO);
-        System.out.println("save journey");
-        ticketClient.saveJourney(journey);
+        journey.setActive(true);
+        return journey;
+    }
+
+    private static StopEntity buildStop(final String name, final String cityName,
+                                        final LocalDate buildDate, final String description,
+                                        final Double lat, final Double lon){
+        final StopAddInfoEntity stopAddInfo = new StopAddInfoEntity();
+        stopAddInfo.setLatitude(lat);
+        stopAddInfo.setLongitude(lon);
+
+        final CommonInfo commonInfo = new CommonInfo();
+        commonInfo.setName(name);
+        commonInfo.setCityName(cityName);
+        commonInfo.setBuildDate(buildDate);
+        commonInfo.setDescription(description);
+
+        final StopEntity stop = new StopEntity();
+        stop.addAddInfo(stopAddInfo);
+        stop.setCommonInfo(commonInfo);
+        return stop;
+    }
+
+    private static VehicleEntity buildVehicle(final String name){
+        final VehicleEntity vehicle = new VehicleEntity();
+        vehicle.setName(name);
+        return vehicle;
+    }
+
+    private static SeatInfoEntity buildSeatInfo(final JourneyEntity journey,
+            final VehicleEntity vehicle, final Integer freeSeats){
+        final SeatInfoEntity seatInfo = new SeatInfoEntity();
+        seatInfo.setJourney(journey);
+        seatInfo.setVehicle(vehicle);
+        seatInfo.setFreeSeats(freeSeats);
+        return seatInfo;
     }
 }

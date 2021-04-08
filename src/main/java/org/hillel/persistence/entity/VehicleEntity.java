@@ -5,7 +5,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -18,8 +20,11 @@ public class VehicleEntity extends AbstractModifyEntity<Long>{
     @Column(name = "name")
     private String name;
 
-    @OneToMany(mappedBy = "vehicle", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "vehicle")
     private Set<JourneyEntity> journeys = new HashSet<>();
+
+    @OneToMany(mappedBy = "vehicle", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<SeatInfoEntity> seatInfos = new ArrayList<>();
 
     public void addJourney(final JourneyEntity journey){
         if (journeys == null){
@@ -29,6 +34,13 @@ public class VehicleEntity extends AbstractModifyEntity<Long>{
             journeys.add(journey);
             journey.setVehicle(this);
         }
+    }
+
+    public void addSeatInfo(SeatInfoEntity seatInfo){
+        if (seatInfo == null) return;
+        if (seatInfos == null) seatInfos = new ArrayList<>();
+        seatInfos.add(seatInfo);
+        seatInfo.setVehicle(this);
     }
 
     @Override

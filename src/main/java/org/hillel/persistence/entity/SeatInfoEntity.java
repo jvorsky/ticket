@@ -16,11 +16,11 @@ import javax.persistence.*;
 public class SeatInfoEntity extends AbstractModifyEntity<Long>{
 
     @ManyToOne
-    @JoinColumn(name = "vehicle_id")
+    @JoinColumn(name = "vehicle_id", nullable = false)
     private VehicleEntity vehicle;
 
     @ManyToOne
-    @JoinColumn(name = "journey_id")
+    @JoinColumn(name = "journey_id", nullable = false)
     private JourneyEntity journey;
 
     // Кол-во свободных мест

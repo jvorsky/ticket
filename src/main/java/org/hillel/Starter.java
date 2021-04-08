@@ -16,34 +16,30 @@ public class Starter {
         final ApplicationContext context = new AnnotationConfigApplicationContext(RootConfig.class);
         TicketClient ticketClient = context.getBean(TicketClient.class);
 
+        // Создадим транспортное средство поезд
+        VehicleEntity trainVehicle = buildVehicle("Интерсити");
+        trainVehicle = ticketClient.createOrUpdateVechicle(trainVehicle);
+
         // Создадим маршрут с остановками
         JourneyEntity journey = buildJourney("Odessa", "Kiev", Instant.now(), Instant.now().plusSeconds(1000));
-
         journey.addStop(buildStop("Одесса-Главная", "Одесса", LocalDate.parse("1980-12-03"), "", 1D, 2D));
         journey.addStop(buildStop("Подольск", "Подольск", LocalDate.parse("1980-12-03"), "", 1D, 2D));
         journey.addStop(buildStop("Вапнярка", "Вапнярка", LocalDate.parse("1980-12-03"), "", 5D, 2D));
         journey.addStop(buildStop("Жмеринка", "Жмеринка", LocalDate.parse("1980-12-03"), "", 7D, 2D));
         journey.addStop(buildStop("Винница", "Винница", LocalDate.parse("1980-12-03"), "", 7D, 2D));
         journey.addStop(buildStop("Киев-Пасс.", "Киев", LocalDate.parse("1980-12-03"), "", 1D, 2D));
-        ticketClient.createOrUpdateJourney(journey);
 
-        // Создадим два транспортных средства
-        VehicleEntity trainVehicle = buildVehicle("Интерсити");
-        VehicleEntity busVehicle = buildVehicle("Автолюкс");
-        ticketClient.createOrUpdateVechicle(trainVehicle);
-        ticketClient.createOrUpdateVechicle(busVehicle);
+        // укажем транспорт -> поезд
+        journey.setVehicle(trainVehicle);
+        journey = ticketClient.createOrUpdateJourney(journey);
 
-        // Укажем кол-во свободных месть для поезда
-        SeatInfoEntity seatInfo1 = buildSeatInfo(journey, trainVehicle, 120);
-        // Укажем кол-во свободных месть для автобуса
-        SeatInfoEntity seatInfo2 = buildSeatInfo(journey, busVehicle, 5);
-        journey.addSeatInfo(seatInfo1);
-        journey.addSeatInfo(seatInfo2);
-        ticketClient.createOrUpdateJourney(journey);
+        // Укажем кол-во свободных мест для поезда
+        trainVehicle.addSeatInfo(buildSeatInfo(journey, trainVehicle, 120));
+        trainVehicle = ticketClient.createOrUpdateVechicle(trainVehicle);
 
-        // уменьшим кол-во мест в автобусе
-        seatInfo1.setFreeSeats(100);
-        ticketClient.createOrUpdateSeatInfo(seatInfo1);
+        // уменьшим кол-во мест в поезде
+        trainVehicle.getSeatInfos().get(0).setFreeSeats(100);
+        trainVehicle = ticketClient.createOrUpdateVechicle(trainVehicle);
 
     }
 

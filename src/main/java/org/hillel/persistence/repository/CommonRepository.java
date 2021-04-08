@@ -12,7 +12,7 @@ import java.util.Optional;
 public abstract class CommonRepository<E extends AbstractModifyEntity<ID>, ID extends Serializable> implements GenericRepository<E, ID>{
 
     @PersistenceContext
-    private EntityManager entityManager;
+    protected EntityManager entityManager;
     private final Class<E> entityClass;
 
     public CommonRepository(Class<E> entityClass) {

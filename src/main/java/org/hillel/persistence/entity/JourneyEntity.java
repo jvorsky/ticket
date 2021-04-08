@@ -3,6 +3,7 @@ package org.hillel.persistence.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hillel.persistence.entity.enums.DirectionType;
 
@@ -18,6 +19,7 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @DynamicUpdate
+@DynamicInsert
 public class JourneyEntity extends AbstractModifyEntity<Long> {
 
     @Column(name = "station_from", length = 50, nullable = false, columnDefinition = "varchar(100) default 'NONE'")
@@ -36,7 +38,7 @@ public class JourneyEntity extends AbstractModifyEntity<Long> {
     @Enumerated(EnumType.STRING)
     private DirectionType direction = DirectionType.TO;
 
-    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vehicle_id")
     private VehicleEntity vehicle;
 
@@ -46,19 +48,10 @@ public class JourneyEntity extends AbstractModifyEntity<Long> {
             inverseJoinColumns = @JoinColumn(name = "stop_id"))
     private List<StopEntity> stops = new ArrayList<>();
 
-    @OneToMany(mappedBy = "journey", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    private List<SeatInfoEntity> seatInfos = new ArrayList<>();
-
     public void addStop(final StopEntity stop){
         if (stop == null) return;
         if (stops == null) stops = new ArrayList<>();
         stops.add(stop);
-    }
-
-    public void addSeatInfo(SeatInfoEntity seatInfo){
-        if (seatInfo == null) return;
-        if (seatInfos == null) seatInfos = new ArrayList<>();
-        seatInfos.add(seatInfo);
     }
 
     @Override

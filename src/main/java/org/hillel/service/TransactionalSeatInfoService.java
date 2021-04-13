@@ -17,4 +17,14 @@ public class TransactionalSeatInfoService {
         return seatInfoRepository.createOrUpdate(seatInfo);
     }
 
+    @Transactional
+    public void remove(SeatInfoEntity seatInfo){
+        seatInfoRepository.remove(seatInfo);
+    }
+
+    @Transactional
+    public void removeById(Long id){
+        seatInfoRepository.removeById(id);
+    }
+
 }

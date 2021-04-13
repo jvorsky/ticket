@@ -10,4 +10,11 @@ public class StopRepository extends CommonRepository<StopEntity, Long> {
         super(StopEntity.class);
     }
 
+    @Override
+    public void remove(StopEntity entity) {
+        StopEntity stop = findById(entity.getId()).get();
+        stop.removeAllJourneys();
+        getEntityManager().remove(stop.getStopAddInfo());
+        super.remove(stop);
+    }
 }

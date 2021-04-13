@@ -4,8 +4,7 @@ import org.hillel.persistence.entity.StopEntity;
 import org.hillel.persistence.repository.StopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TransactionalStopService {
@@ -16,5 +15,10 @@ public class TransactionalStopService {
     @Transactional
     public StopEntity createOrUpdate(StopEntity stopEntity){
         return stopRepository.createOrUpdate(stopEntity);
+    }
+
+    @Transactional
+    public void remove(StopEntity stop) {
+        stopRepository.remove(stop);
     }
 }

@@ -3,6 +3,7 @@ package org.hillel.persistence.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -48,5 +49,10 @@ public class VehicleEntity extends AbstractModifyEntity<Long>{
         return "VehicleEntity{" +
                 "name='" + name + '\'' +
                 '}';
+    }
+
+    public void removeAllJourney(){
+        if (CollectionUtils.isEmpty(journeys)) return;
+        journeys.forEach(item -> item.setVehicle(null));
     }
 }

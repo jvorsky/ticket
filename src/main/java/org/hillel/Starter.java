@@ -41,6 +41,21 @@ public class Starter {
         trainVehicle.getSeatInfos().get(0).setFreeSeats(100);
         trainVehicle = ticketClient.createOrUpdateVechicle(trainVehicle);
 
+        // *********** УДАЛЕНИЕ ************
+
+        // удалим информацию по транспортному средству
+        trainVehicle.getSeatInfos().forEach(ticketClient::removeSeatInfo);
+
+        // удалим само транспортное средство
+        ticketClient.removeVehicle(trainVehicle);
+
+        // удалим одну остановку
+        StopEntity stop = journey.getStops().get(0);
+        ticketClient.removeStop(stop);
+
+        // удалим весь маршрут
+        ticketClient.removeJourneyById(journey.getId());
+
     }
 
     private static JourneyEntity buildJourney(final String from, final String to,

@@ -3,6 +3,7 @@ package org.hillel.persistence.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -39,4 +40,9 @@ public class StopEntity extends AbstractModifyEntity<Long> {
         journeys.add(journey);
     }
 
+    public void removeAllJourneys(){
+        if (CollectionUtils.isEmpty(journeys)) return;
+        journeys.forEach(journeyEntity -> journeyEntity.getStops().remove(this));
+        this.journeys.clear();
+    }
 }

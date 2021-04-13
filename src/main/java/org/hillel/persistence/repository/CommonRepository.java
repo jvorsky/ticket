@@ -1,6 +1,6 @@
 package org.hillel.persistence.repository;
 
-import org.hillel.persistence.entity.AbstractModifyEntity;
+import org.hillel.persistence.entity.AbstractEntity;
 import org.springframework.util.Assert;
 
 import javax.persistence.EntityManager;
@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 
-public abstract class CommonRepository<E extends AbstractModifyEntity<ID>, ID extends Serializable> implements GenericRepository<E, ID>{
+public abstract class CommonRepository<E extends AbstractEntity<ID>, ID extends Serializable> implements GenericRepository<E, ID>{
 
     @PersistenceContext
     protected EntityManager entityManager;
@@ -38,11 +38,19 @@ public abstract class CommonRepository<E extends AbstractModifyEntity<ID>, ID ex
 
     @Override
     public void removeById(ID id) {
-        throw new UnsupportedOperationException("not impl");
+        entityManager.remove(entityManager.getReference(entityClass, id));
     }
 
     @Override
     public void remove(E entity) {
-        throw new UnsupportedOperationException("not impl");
+        if (entityManager.contains(entity)){
+            entityManager.remove(entity);
+        } else {
+            removeById(entity.getId());
+        }
+    }
+
+    public EntityManager getEntityManager() {
+        return entityManager;
     }
 }

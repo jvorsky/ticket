@@ -58,4 +58,32 @@ public class TicketClient {
     public VehicleEntity createOrUpdateVechicle(VehicleEntity vehicle) {
         return vehicleService.createOrUpdate(vehicle);
     }
+
+    public void removeJourney(JourneyEntity journey) {
+        journeyService.remove(journey);
+    }
+
+    public void removeJourneyById(Long journeyId) {
+        journeyService.removeById(journeyId);
+    }
+
+    public void removeVehicle(VehicleEntity vehicleEntity){
+        vehicleService.remove(vehicleEntity);
+    }
+
+    public void removeVehicleById(Long id){
+        vehicleService.removeById(id);
+    }
+
+    public void removeSeatInfo(SeatInfoEntity seatInfo){
+        seatInfoService.remove(seatInfo);
+    }
+
+    public void removeSeatInfoById(Long id){
+        seatInfoService.removeById(id);
+    }
+
+    public void removeStop(StopEntity stop) {
+        stopService.remove(stop);
+    }
 }

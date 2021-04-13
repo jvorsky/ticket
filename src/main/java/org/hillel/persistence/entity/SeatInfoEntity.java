@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @DynamicUpdate
-public class SeatInfoEntity extends AbstractModifyEntity<Long>{
+public class SeatInfoEntity extends AbstractEntity<Long>{
 
     @ManyToOne
     @JoinColumn(name = "vehicle_id", nullable = false)

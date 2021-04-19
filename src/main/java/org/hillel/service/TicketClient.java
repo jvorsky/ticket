@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -85,5 +86,21 @@ public class TicketClient {
 
     public void removeStop(StopEntity stop) {
         stopService.remove(stop);
+    }
+
+    public Collection<VehicleEntity> findVehicleByIds(Long... ids){
+        return vehicleService.findByIds(ids);
+    }
+
+    public VehicleEntity findVehicleById(Long id, boolean withDep){
+        return vehicleService.findById(id, withDep).get();
+    }
+
+    public Collection<VehicleEntity> findAllVehicles(){
+        return vehicleService.findAll();
+    }
+
+    public Collection<VehicleEntity> findAllByName(String name){
+        return vehicleService.findAllByName(name);
     }
 }

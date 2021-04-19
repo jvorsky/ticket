@@ -41,13 +41,24 @@ public class Starter {
         trainVehicle.getSeatInfos().get(0).setFreeSeats(100);
         trainVehicle = ticketClient.createOrUpdateVechicle(trainVehicle);
 
-        // *********** УДАЛЕНИЕ ************
+        //System.out.println(ticketClient.findVehicleByIds(1L,2L,3L));
+        System.out.println(ticketClient.findVehicleById(1L, true));
+        System.out.println(ticketClient.findAllVehicles());
+        //System.out.println(ticketClient.findAllByName("Интерсити"));
 
+        // *********** УДАЛЕНИЕ ************
         // удалим информацию по транспортному средству
-        trainVehicle.getSeatInfos().forEach(ticketClient::removeSeatInfo);
+//        trainVehicle.getSeatInfos().forEach(ticketClient::removeSeatInfo);
 
         // удалим само транспортное средство
+        trainVehicle.addSeatInfo(buildSeatInfo(ticketClient.findJourneyById(10L, false).get(), trainVehicle, 120));
+        trainVehicle.addSeatInfo(buildSeatInfo(ticketClient.findJourneyById(11L, false).get(), trainVehicle, 120));
+        trainVehicle.addSeatInfo(buildSeatInfo(ticketClient.findJourneyById(12L, false).get(), trainVehicle, 120));
+        trainVehicle = ticketClient.createOrUpdateVechicle(trainVehicle);
+
+        System.out.println("remove vehicle");
         ticketClient.removeVehicle(trainVehicle);
+/*
 
         // удалим одну остановку
         StopEntity stop = journey.getStops().get(0);
@@ -55,7 +66,7 @@ public class Starter {
 
         // удалим весь маршрут
         ticketClient.removeJourneyById(journey.getId());
-
+*/
     }
 
     private static JourneyEntity buildJourney(final String from, final String to,

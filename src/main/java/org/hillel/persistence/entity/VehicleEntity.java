@@ -16,6 +16,17 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
+@NamedQueries(value = {
+        @NamedQuery(name = "findAll", query = "select v from VehicleEntity v")
+})
+@NamedStoredProcedureQueries(value = {
+        @NamedStoredProcedureQuery(
+                name = "findAll",
+                procedureName = "find_all_vehicles",
+                parameters = @StoredProcedureParameter(mode = ParameterMode.REF_CURSOR, type = Class.class),
+                resultClasses = VehicleEntity.class
+        )
+})
 public class VehicleEntity extends AbstractModifyEntity<Long>{
 
     @Column(name = "name")

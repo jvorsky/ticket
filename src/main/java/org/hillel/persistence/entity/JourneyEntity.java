@@ -14,8 +14,9 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "journey", uniqueConstraints = @UniqueConstraint(name = "uniq_station_from_to",
-        columnNames = {"station_from", "station_to"}))
+@Table(name = "journey"//, uniqueConstraints = @UniqueConstraint(name = "uniq_station_from_to",
+//        columnNames = {"station_from", "station_to"})
+)
 @Getter
 @Setter
 @NoArgsConstructor

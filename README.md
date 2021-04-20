@@ -50,4 +50,20 @@ free_seats - кол-во свободных мест
     - удаление остановки
     - удаление маршрута
 
+##### ДЗ 5. Получение сущностей
 
+Для уменьшения дублирования кода ввел тип запроса
+
+~~~~
+public enum QueryType {
+    HQL, NATIVE, NAMED, CRITERIA, STORED_PROCEDURE
+}
+~~~~
+и создал абстрактный класс содержащий все варианты получения сущностей 
+плюс метод для получения данных в зависимости от типа запроса.
+
+~~~~
+AbstractTransactionalService
+
+public Collection<E> findAll(QueryType queryType)
+~~~~

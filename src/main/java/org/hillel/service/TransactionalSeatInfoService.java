@@ -7,10 +7,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class TransactionalSeatInfoService {
+public class TransactionalSeatInfoService extends AbstractTransactionalService<SeatInfoEntity, Long> {
+
+    private final SeatInfoRepository seatInfoRepository;
 
     @Autowired
-    private SeatInfoRepository seatInfoRepository;
+    public TransactionalSeatInfoService(SeatInfoRepository seatInfoRepository) {
+        super(seatInfoRepository);
+        this.seatInfoRepository = seatInfoRepository;
+    }
 
     @Transactional
     public SeatInfoEntity createOrUpdate(final SeatInfoEntity seatInfo){

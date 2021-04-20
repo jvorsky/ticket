@@ -3,6 +3,7 @@ package org.hillel;
 import org.hillel.config.RootConfig;
 import org.hillel.persistence.entity.*;
 import org.hillel.persistence.entity.enums.DirectionType;
+import org.hillel.service.QueryType;
 import org.hillel.service.TicketClient;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -42,23 +43,16 @@ public class Starter {
         trainVehicle = ticketClient.createOrUpdateVechicle(trainVehicle);
 
         //System.out.println(ticketClient.findVehicleByIds(1L,2L,3L));
-        System.out.println(ticketClient.findVehicleById(1L, true));
-        System.out.println(ticketClient.findAllVehicles());
+        //System.out.println(ticketClient.findVehicleById(1L, true));
         //System.out.println(ticketClient.findAllByName("Интерсити"));
 
         // *********** УДАЛЕНИЕ ************
+/*
         // удалим информацию по транспортному средству
-//        trainVehicle.getSeatInfos().forEach(ticketClient::removeSeatInfo);
+        trainVehicle.getSeatInfos().forEach(ticketClient::removeSeatInfo);
 
         // удалим само транспортное средство
-        trainVehicle.addSeatInfo(buildSeatInfo(ticketClient.findJourneyById(10L, false).get(), trainVehicle, 120));
-        trainVehicle.addSeatInfo(buildSeatInfo(ticketClient.findJourneyById(11L, false).get(), trainVehicle, 120));
-        trainVehicle.addSeatInfo(buildSeatInfo(ticketClient.findJourneyById(12L, false).get(), trainVehicle, 120));
-        trainVehicle = ticketClient.createOrUpdateVechicle(trainVehicle);
-
-        System.out.println("remove vehicle");
         ticketClient.removeVehicle(trainVehicle);
-/*
 
         // удалим одну остановку
         StopEntity stop = journey.getStops().get(0);
@@ -67,6 +61,18 @@ public class Starter {
         // удалим весь маршрут
         ticketClient.removeJourneyById(journey.getId());
 */
+        // ***********  FIND ALL *************
+        System.out.println("\nQueryType.HQL");
+        System.out.println(ticketClient.findAllJourneys(QueryType.HQL));
+        System.out.println("\nQueryType.NATIVE");
+        System.out.println(ticketClient.findAllJourneys(QueryType.NATIVE));
+        System.out.println("\nQueryType.NAMED");
+        System.out.println(ticketClient.findAllJourneys(QueryType.NAMED));
+        System.out.println("\nQueryType.CRITERIA");
+        System.out.println(ticketClient.findAllJourneys(QueryType.CRITERIA));
+        System.out.println("\nQueryType.STORED_PROCEDURE");
+        System.out.println(ticketClient.findAllJourneys(QueryType.STORED_PROCEDURE));
+
     }
 
     private static JourneyEntity buildJourney(final String from, final String to,

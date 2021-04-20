@@ -1,8 +1,8 @@
 package org.hillel.config;
 
-import org.hillel.service.InMemoryJourneyServiceImpl;
-import org.hillel.service.JourneyService;
-import org.hillel.service.StubJourneyServiceImpl;
+import org.hillel.service.old.InMemoryJourneyServiceImpl;
+import org.hillel.service.old.JourneyService;
+import org.hillel.service.old.StubJourneyServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;

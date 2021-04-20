@@ -7,10 +7,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class TransactionalStopService {
+public class TransactionalStopService extends AbstractTransactionalService<StopEntity, Long> {
+
+    private final StopRepository stopRepository;
 
     @Autowired
-    private StopRepository stopRepository;
+    public TransactionalStopService(StopRepository stopRepository) {
+        super(stopRepository);
+        this.stopRepository = stopRepository;
+    }
 
     @Transactional
     public StopEntity createOrUpdate(StopEntity stopEntity){

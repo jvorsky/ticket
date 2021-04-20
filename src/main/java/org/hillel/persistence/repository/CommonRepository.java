@@ -4,10 +4,7 @@ import org.hibernate.Session;
 import org.hillel.persistence.entity.AbstractEntity;
 import org.springframework.util.Assert;
 
-import javax.persistence.EntityManager;
-import javax.persistence.ParameterMode;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.persistence.criteria.*;
 import java.io.Serializable;
 import java.util.Collection;
@@ -63,33 +60,38 @@ public abstract class CommonRepository<E extends AbstractEntity<ID>, ID extends 
         return entityManager;
     }
 
-    public Collection<E> findByName(String name){
-        final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        final CriteriaQuery<E> query = criteriaBuilder.createQuery(entityClass);
-        final Root<E> from = query.from(entityClass);
-        Join<Object, Object> journeys = from.join("journeys", JoinType.LEFT);
-        final Predicate byName = criteriaBuilder.equal(from.get("name"), criteriaBuilder.literal(name));
-        final Predicate active = criteriaBuilder.equal(from.get("active"), criteriaBuilder.literal(true));
-        final Predicate byJourneyName = criteriaBuilder.equal(journeys.get("stationFrom"), criteriaBuilder.literal("from 1"));
-        return entityManager.createQuery(query.
-                select(from).
-                where(byName, active, byJourneyName)
-                ).getResultList();
+    // метод поиска через HQL
+    public Collection<E> findAll(){
+        return entityManager.createQuery("select j from " + entityClass.getName() + " j ", entityClass).getResultList();
     }
 
-    @Override
-    public Collection<E> findAll() {
-        //return entityManager.createQuery("select j from " + entityClass.getName() + " j ", entityClass).getResultList();
-//        return entityManager.createNativeQuery(
-//                "select * from " + entityClass.getAnnotation(Table.class).name(), entityClass).getResultList();
-//        final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-//        final CriteriaQuery<E> query = criteriaBuilder.createQuery(entityClass);
-//        final Root<E> from = query.from(entityClass);
-//        return entityManager.createQuery(query.select(from)).getResultList();
+    // метод поиска через вызов sql запроса
+    public Collection<E> findAllAsNative(){
+        return entityManager.createNativeQuery(
+                "select * from " + entityClass.getAnnotation(Table.class).name(), entityClass).getResultList();
+    }
+
+    // метод поиска через вызов именованного запроса по алиасу
+    public Collection<E> findAllAsNamed(){
+        return entityManager.createNamedQuery(
+                entityClass.getAnnotation(NamedQueries.class).value()[0].name(), entityClass).getResultList();
+    }
+
+    // метод поиска через CriteriaBuilder
+    public Collection<E> findAllAsCriteria(){
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<E> query = criteriaBuilder.createQuery(entityClass);
+        Root<E> from = query.from(entityClass);
+        return entityManager.createQuery(query.select(from)).getResultList();
+    }
+
+    // метод поиска через вызов хранимой функции
+    public Collection<E> findAllAsStoredProcedure(){
         return entityManager.createStoredProcedureQuery("find_all", entityClass).
                 registerStoredProcedureParameter(1, Class.class, ParameterMode.REF_CURSOR).
                 registerStoredProcedureParameter(2, String.class, ParameterMode.IN).
                 setParameter(2, entityClass.getAnnotation(Table.class).name()).
                 getResultList();
     }
+
 }

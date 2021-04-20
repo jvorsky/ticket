@@ -14,6 +14,9 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@NamedQueries(value = {
+        @NamedQuery(name = "findAllStops", query = "select v from StopEntity v")
+})
 public class StopEntity extends AbstractModifyEntity<Long> {
 
     @Embedded
@@ -44,5 +47,12 @@ public class StopEntity extends AbstractModifyEntity<Long> {
         if (CollectionUtils.isEmpty(journeys)) return;
         journeys.forEach(journeyEntity -> journeyEntity.getStops().remove(this));
         this.journeys.clear();
+    }
+
+    @Override
+    public String toString() {
+        return "StopEntity{" +
+                "name=" + commonInfo.getName() +
+                '}';
     }
 }

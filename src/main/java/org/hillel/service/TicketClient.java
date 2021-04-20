@@ -4,6 +4,7 @@ import org.hillel.persistence.entity.JourneyEntity;
 import org.hillel.persistence.entity.SeatInfoEntity;
 import org.hillel.persistence.entity.StopEntity;
 import org.hillel.persistence.entity.VehicleEntity;
+import org.hillel.service.old.JourneyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -96,11 +97,21 @@ public class TicketClient {
         return vehicleService.findById(id, withDep).get();
     }
 
-    public Collection<VehicleEntity> findAllVehicles(){
-        return vehicleService.findAll();
-    }
-
     public Collection<VehicleEntity> findAllByName(String name){
         return vehicleService.findAllByName(name);
     }
+
+    public Collection<JourneyEntity> findAllJourneys(QueryType queryType){
+        return journeyService.findAll(queryType);
+    }
+    public Collection<SeatInfoEntity> findAllSeatInfos(QueryType queryType){
+        return seatInfoService.findAll(queryType);
+    }
+    public Collection<StopEntity> findAllStops(QueryType queryType){
+        return stopService.findAll(queryType);
+    }
+    public Collection<VehicleEntity> findAllVehicles(QueryType queryType){
+        return vehicleService.findAll(queryType);
+    }
+
 }

@@ -1,4 +1,4 @@
-package org.hillel.service;
+package org.hillel.service.old;
 
 import org.hillel.Journey;
 

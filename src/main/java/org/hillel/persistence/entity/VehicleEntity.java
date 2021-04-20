@@ -17,7 +17,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @NamedQueries(value = {
-        @NamedQuery(name = "findAll", query = "select v from VehicleEntity v")
+        @NamedQuery(name = "findAllVehicles", query = "select v from VehicleEntity v")
 })
 @NamedStoredProcedureQueries(value = {
         @NamedStoredProcedureQuery(

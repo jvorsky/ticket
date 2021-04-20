@@ -13,6 +13,9 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @DynamicUpdate
+@NamedQueries(value = {
+        @NamedQuery(name = "findAllSeatInfos", query = "select v from SeatInfoEntity v")
+})
 public class SeatInfoEntity extends AbstractEntity<Long>{
 
     @ManyToOne

@@ -10,10 +10,15 @@ import java.util.Collection;
 import java.util.Optional;
 
 @Service
-public class TransactionalVehicleService {
+public class TransactionalVehicleService extends AbstractTransactionalService<VehicleEntity, Long>{
+
+    private final VehicleRepository vehicleRepository;
 
     @Autowired
-    private VehicleRepository vehicleRepository;
+    public TransactionalVehicleService(VehicleRepository vehicleRepository) {
+        super(vehicleRepository);
+        this.vehicleRepository = vehicleRepository;
+    }
 
     @Transactional
     public VehicleEntity createOrUpdate(VehicleEntity vehicle){
@@ -43,11 +48,6 @@ public class TransactionalVehicleService {
         vehicle.get().getJourneys().size();
         vehicle.get().getSeatInfos().size();
         return vehicle;
-    }
-
-    @Transactional(readOnly = true)
-    public Collection<VehicleEntity> findAll(){
-        return vehicleRepository.findAll();
     }
 
     @Transactional(readOnly = true)

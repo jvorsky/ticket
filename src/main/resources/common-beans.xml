@@ -14,9 +14,9 @@
 <!--    </bean>-->
 
 <!--    <bean id="inMemoryJourneyService"-->
-<!--          class="org.hillel.service.InMemoryJourneyServiceImpl">-->
+<!--          class="org.hillel.service.old.InMemoryJourneyServiceImpl">-->
 <!--        <constructor-arg name="text" value="3"/>-->
 <!--    </bean>-->
 
-<!--    <bean name="stub" class="org.hillel.service.StubJourneyServiceImpl"/>-->
+<!--    <bean name="stub" class="org.hillel.service.old.StubJourneyServiceImpl"/>-->
 </beans>

@@ -9,10 +9,15 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Service
-public class TransactionalJourneyService {
+public class TransactionalJourneyService extends AbstractTransactionalService<JourneyEntity, Long> {
+
+    private final JourneyRepository journeyRepository;
 
     @Autowired
-    private JourneyRepository journeyRepository;
+    public TransactionalJourneyService(JourneyRepository journeyRepository) {
+        super(journeyRepository);
+        this.journeyRepository = journeyRepository;
+    }
 
     @Transactional
     public JourneyEntity createOrUpdate(final JourneyEntity entity){

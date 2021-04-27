@@ -16,40 +16,41 @@ public abstract class AbstractTransactionalService<E extends AbstractEntity<ID>,
     }
 
     @Transactional(readOnly = true)
-    public Collection<E> findAll(QueryType queryType){
+    public Collection<E> findAll(QueryContext queryCntx){
+        QueryType queryType = queryCntx.getQueryType();
         switch (queryType){
-            case HQL: return findAll();
-            case NATIVE:return findAllAsNative();
-            case NAMED:return findAllAsNamed();
-            case CRITERIA:return findAllAsCriteria();
-            case STORED_PROCEDURE:return findAllAsStoredProcedure();
+            case HQL: return findAllAsHQL(queryCntx);
+            case NATIVE:return findAllAsNative(queryCntx);
+            case NAMED:return findAllAsNamed(queryCntx);
+            case CRITERIA:return findAllAsCriteria(queryCntx);
+            case STORED_PROCEDURE:return findAllAsStoredProcedure(queryCntx);
             default:
                 throw new IllegalArgumentException("unknown queryType");
         }
     }
 
     @Transactional(readOnly = true)
-    public Collection<E> findAll(){
-        return repository.findAll();
+    public Collection<E> findAllAsHQL(QueryContext queryCntx){
+        return repository.findAll(queryCntx);
     }
 
     @Transactional(readOnly = true)
-    public Collection<E> findAllAsNative(){
-        return repository.findAllAsNative();
+    public Collection<E> findAllAsNative(QueryContext queryCntx){
+        return repository.findAllAsNative(queryCntx);
     }
 
     @Transactional(readOnly = true)
-    public Collection<E> findAllAsNamed(){
-        return repository.findAllAsNamed();
+    public Collection<E> findAllAsNamed(QueryContext queryCntx){
+        return repository.findAllAsNamed(queryCntx);
     }
 
     @Transactional(readOnly = true)
-    public Collection<E> findAllAsCriteria(){
-        return repository.findAllAsCriteria();
+    public Collection<E> findAllAsCriteria(QueryContext queryCntx){
+        return repository.findAllAsCriteria(queryCntx);
     }
 
     @Transactional(readOnly = true)
-    public Collection<E> findAllAsStoredProcedure(){
-        return repository.findAllAsStoredProcedure();
+    public Collection<E> findAllAsStoredProcedure(QueryContext queryCntx){
+        return repository.findAllAsStoredProcedure(queryCntx);
     }
 }

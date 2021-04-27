@@ -76,7 +76,8 @@ public class JourneyEntity extends AbstractModifyEntity<Long> {
     @Override
     public String toString() {
         return "JourneyEntity{" +
-                "stationFrom='" + stationFrom + '\'' +
+                " id='" + getId() + '\'' +
+                ", stationFrom='" + stationFrom + '\'' +
                 ", stationTo='" + stationTo + '\'' +
                 ", dateFrom=" + dateFrom +
                 ", dateTo=" + dateTo +

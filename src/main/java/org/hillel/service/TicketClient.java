@@ -101,17 +101,45 @@ public class TicketClient {
         return vehicleService.findAllByName(name);
     }
 
-    public Collection<JourneyEntity> findAllJourneys(QueryType queryType){
-        return journeyService.findAll(queryType);
+    public Collection<JourneyEntity> findAllJourneys(QueryType queryType,
+                                                     int pageNumber,
+                                                     int pageSize,
+                                                     String orderFieldName,
+                                                     boolean orderAsc){
+        QueryContext queryContext = new QueryContext(queryType, pageNumber, pageSize, orderFieldName, orderAsc);
+        return journeyService.findAll(queryContext);
     }
-    public Collection<SeatInfoEntity> findAllSeatInfos(QueryType queryType){
-        return seatInfoService.findAll(queryType);
+    public Collection<SeatInfoEntity> findAllSeatInfos(QueryType queryType,
+                                                       int pageNumber,
+                                                       int pageSize,
+                                                       String orderFieldName,
+                                                       boolean orderAsc){
+        QueryContext queryContext = new QueryContext(queryType, pageNumber, pageSize, orderFieldName, orderAsc);
+        return seatInfoService.findAll(queryContext);
     }
-    public Collection<StopEntity> findAllStops(QueryType queryType){
-        return stopService.findAll(queryType);
-    }
-    public Collection<VehicleEntity> findAllVehicles(QueryType queryType){
-        return vehicleService.findAll(queryType);
+    public Collection<StopEntity> findAllStops(QueryType queryType,
+                                               int pageNumber,
+                                               int pageSize,
+                                               String orderFieldName,
+                                               boolean orderAsc){
+        QueryContext queryContext = new QueryContext(queryType, pageNumber, pageSize, orderFieldName, orderAsc);
+        return stopService.findAll(queryContext);
     }
 
+    public Collection<VehicleEntity> findAllVehicles(QueryType queryType,
+                                                     int pageNumber,
+                                                     int pageSize,
+                                                     String orderFieldName,
+                                                     boolean orderAsc){
+        QueryContext queryContext = new QueryContext(queryType, pageNumber, pageSize, orderFieldName, orderAsc);
+        return vehicleService.findAll(queryContext);
+    }
+
+    public Collection<VehicleEntity> findVehicleWithMinFreeSeats(){
+        return vehicleService.findWithMinFreeSeats();
+    }
+
+    public Collection<VehicleEntity> findVehicleWithMaxFreeSeats(){
+        return vehicleService.findWithMaxFreeSeats();
+    }
 }

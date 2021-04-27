@@ -14,10 +14,12 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 @Configuration
 @PropertySource("database.properties")
@@ -50,7 +52,8 @@ public class DatabaseConfig {
         properties.put("hibernate.dialect", PostgreSQL10Dialect.class.getName());
         properties.put("hibernate.hbm2ddl.auto", "none");
         properties.put("hibernate.show_sql", "true");
-        properties.put("javax.persistence.query.timeout", 5*60*1000); // 5 минут
+        properties.put("javax.persistence.query.timeout",
+                (int)TimeUnit.MILLISECONDS.convert(5L, TimeUnit.MINUTES)); // 5 минут
         emf.setJpaProperties(properties);
         return emf;
     }
@@ -61,5 +64,10 @@ public class DatabaseConfig {
         transactionManager.setEntityManagerFactory(entityManagerFactory);
         transactionManager.setDataSource(dataSource());
         return transactionManager;
+    }
+
+    @Bean
+    public TransactionTemplate transactionTemplate(final PlatformTransactionManager transactionManager){
+        return new TransactionTemplate(transactionManager);
     }
 }

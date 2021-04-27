@@ -44,7 +44,8 @@ public class Starter {
 
         //System.out.println(ticketClient.findVehicleByIds(1L,2L,3L));
         //System.out.println(ticketClient.findVehicleById(1L, true));
-        //System.out.println(ticketClient.findAllByName("Интерсити"));
+        System.out.println("\nfindAllByName");
+        System.out.println(ticketClient.findAllByName("Интерсити"));
 
         // *********** УДАЛЕНИЕ ************
 /*
@@ -62,17 +63,35 @@ public class Starter {
         ticketClient.removeJourneyById(journey.getId());
 */
         // ***********  FIND ALL *************
+        System.out.println("Поиск journey с сортировкой по id");
         System.out.println("\nQueryType.HQL");
-        System.out.println(ticketClient.findAllJourneys(QueryType.HQL));
+        System.out.println(ticketClient.findAllJourneys(QueryType.HQL, 1, 5, AbstractEntity_.ID, true));
         System.out.println("\nQueryType.NATIVE");
-        System.out.println(ticketClient.findAllJourneys(QueryType.NATIVE));
-        System.out.println("\nQueryType.NAMED");
-        System.out.println(ticketClient.findAllJourneys(QueryType.NAMED));
+        System.out.println(ticketClient.findAllJourneys(QueryType.NATIVE, 2, 5, "id", true));
         System.out.println("\nQueryType.CRITERIA");
-        System.out.println(ticketClient.findAllJourneys(QueryType.CRITERIA));
-        System.out.println("\nQueryType.STORED_PROCEDURE");
-        System.out.println(ticketClient.findAllJourneys(QueryType.STORED_PROCEDURE));
+        System.out.println(ticketClient.findAllJourneys(QueryType.CRITERIA, 3, 5, AbstractEntity_.ID, true));
 
+        System.out.println("Поиск vehicle с сортировкой по id");
+        System.out.println("\nQueryType.HQL");
+        System.out.println(ticketClient.findAllVehicles(QueryType.HQL, 1, 10, AbstractEntity_.ID, true));
+        System.out.println("\nQueryType.NATIVE");
+        System.out.println(ticketClient.findAllVehicles(QueryType.NATIVE, 2, 10, "id", true));
+        System.out.println("\nQueryType.CRITERIA");
+        System.out.println(ticketClient.findAllVehicles(QueryType.CRITERIA, 3, 10, AbstractEntity_.ID, true));
+
+        System.out.println("Поиск stop с сортировкой по active");
+        System.out.println("\nQueryType.HQL");
+        System.out.println(ticketClient.findAllStops(QueryType.HQL, 1, 4, StopEntity_.ACTIVE, true));
+        System.out.println("\nQueryType.NATIVE");
+        System.out.println(ticketClient.findAllStops(QueryType.NATIVE, 2, 4, "active", true));
+        System.out.println("\nQueryType.CRITERIA");
+        System.out.println(ticketClient.findAllStops(QueryType.CRITERIA, 3, 4, StopEntity_.ACTIVE, true));
+
+        System.out.println("\nПолучение списка транспортных средств с наименьшим количеством свободных мест");
+        System.out.println(ticketClient.findVehicleWithMinFreeSeats());
+
+        System.out.println("\nПолучение списка транспортных средств с наибольшим  количеством свободных мест");
+        System.out.println(ticketClient.findVehicleWithMaxFreeSeats());
     }
 
     private static JourneyEntity buildJourney(final String from, final String to,

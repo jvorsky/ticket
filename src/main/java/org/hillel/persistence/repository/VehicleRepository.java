@@ -1,6 +1,9 @@
 package org.hillel.persistence.repository;
 
+import org.hibernate.query.criteria.internal.OrderImpl;
+import org.hillel.persistence.entity.JourneyEntity_;
 import org.hillel.persistence.entity.VehicleEntity;
+import org.hillel.persistence.entity.VehicleEntity_;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.criteria.*;
@@ -25,17 +28,70 @@ public class VehicleRepository extends CommonRepository<VehicleEntity, Long> {
     }
 
     public Collection<VehicleEntity> findByName(String name){
+        /*
+        return entityManager.createQuery("from " + VehicleEntity.class.getName() +
+                " where name = :nameParam and active = :activeParam", VehicleEntity.class)
+                .setParameter("nameParam", name)
+                .setParameter("activeParam", true)
+                .getResultList();
+         */
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<VehicleEntity> query = criteriaBuilder.createQuery(VehicleEntity.class);
-        final Root<VehicleEntity> from = query.from(VehicleEntity.class);
-        Join<Object, Object> journeys = from.join("journeys", JoinType.LEFT);
-        final Predicate byName = criteriaBuilder.equal(from.get("name"), criteriaBuilder.literal(name));
-        final Predicate active = criteriaBuilder.equal(from.get("active"), criteriaBuilder.literal(true));
-        final Predicate byJourneyName = criteriaBuilder.equal(journeys.get("stationFrom"), criteriaBuilder.literal("from 1"));
+        final Root<VehicleEntity> vehicle = query.from(VehicleEntity.class);
+        Join<Object, Object> journeys = vehicle.join(VehicleEntity_.JOURNEYS, JoinType.LEFT);
+        final Predicate byJourneyName = criteriaBuilder.equal(journeys.get(JourneyEntity_.STATION_FROM), criteriaBuilder.literal("Odessa"));
+        journeys.on(byJourneyName);
+
+        final Predicate byName = criteriaBuilder.equal(vehicle.get(VehicleEntity_.NAME), criteriaBuilder.parameter(String.class, "nameParam"));
+        final Predicate active = criteriaBuilder.equal(vehicle.get(VehicleEntity_.ACTIVE), criteriaBuilder.parameter(Boolean.class, "activeParam"));
         return entityManager.createQuery(query.
-                select(from).
-                where(byName, active, byJourneyName)
-        ).getResultList();
+                select(vehicle).
+                where(byName, active)
+                .orderBy(new OrderImpl(vehicle.get(VehicleEntity_.ID), false)))
+                .setParameter("nameParam", name)
+                .setParameter("activeParam", true)
+                .getResultList();
+//        return entityManager.createQuery(
+//                "select v from VehicleEntity v left join v.journeys js on js.vehicle.id = v.id order by v.id asc ", VehicleEntity.class)
+//                .setFirstResult(1)
+//                .setMaxResults(2)
+//                .getResultList();
+//        return entityManager.createQuery(
+//                "select v from VehicleEntity v left join v.journeys js on js.vehicleEntity.id = v.id and js.stationFrom = :stationFrom order by v.id asc ", VehicleEntity.class)
+//                .setParameter("stationFrom", "Odessa")
+//                .setFirstResult(1)
+//                .setMaxResults(2)
+//                .getResultList();
+    }
+
+    // Метод получения списка транспортных средств с наименьшим количеством свободных мест
+    public Collection<VehicleEntity> findWithMinFreeSeats(){
+        return entityManager.createNativeQuery(
+                        "select vehicle.* " +
+                        "from vehicle " +
+                        "inner join seat_info on vehicle.id = seat_info.vehicle_id " +
+                        "group by vehicle.id " +
+                        "having sum(free_seats) = " +
+                        "       (select min(sumFreeSeats) " +
+                        "        from (select sum(free_seats) sumFreeSeats " +
+                        "              from seat_info " +
+                        "              group by vehicle_id) seat " +
+                        "       )", VehicleEntity.class).getResultList();
+    }
+
+    // Метод получения списка транспортных средств с наименьшим количеством свободных мест
+    public Collection<VehicleEntity> findWithMaxFreeSeats(){
+        return entityManager.createNativeQuery(
+                "select vehicle.* " +
+                        "from vehicle " +
+                        "inner join seat_info on vehicle.id = seat_info.vehicle_id " +
+                        "group by vehicle.id " +
+                        "having sum(free_seats) = " +
+                        "       (select max(sumFreeSeats) " +
+                        "        from (select sum(free_seats) sumFreeSeats " +
+                        "              from seat_info " +
+                        "              group by vehicle_id) seat " +
+                        "       )", VehicleEntity.class).getResultList();
     }
 
 }

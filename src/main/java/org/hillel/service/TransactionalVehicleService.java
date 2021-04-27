@@ -4,7 +4,10 @@ import org.hillel.persistence.entity.VehicleEntity;
 import org.hillel.persistence.repository.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -15,14 +18,32 @@ public class TransactionalVehicleService extends AbstractTransactionalService<Ve
     private final VehicleRepository vehicleRepository;
 
     @Autowired
+    private TransactionTemplate transactionTemplate;
+
+    @Autowired
+    private PlatformTransactionManager platformTransactionManager;
+
+//    @PersistenceContext
+//    private EntityManagerFactory entityManagerFactory;
+
+    @Autowired
     public TransactionalVehicleService(VehicleRepository vehicleRepository) {
         super(vehicleRepository);
         this.vehicleRepository = vehicleRepository;
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public VehicleEntity createOrUpdate(VehicleEntity vehicle){
         return vehicleRepository.createOrUpdate(vehicle);
+//        EntityManager em = entityManagerFactory.createEntityManager();
+//        em.getTransaction().begin();
+//        vehicleRepository.createOrUpdate(vehicle);
+//        em.getTransaction().commit();
+//        DefaultTransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
+//        final TransactionStatus transactionStatus = platformTransactionManager.getTransaction(transactionDefinition);
+//        VehicleEntity vehicleEntity = vehicleRepository.createOrUpdate(vehicle);
+//        platformTransactionManager.commit(transactionStatus);
+//        return vehicleEntity;
     }
 
     @Transactional
@@ -55,4 +76,13 @@ public class TransactionalVehicleService extends AbstractTransactionalService<Ve
         return vehicleRepository.findByName(name);
     }
 
+    @Transactional(readOnly = true)
+    public Collection<VehicleEntity> findWithMinFreeSeats(){
+        return vehicleRepository.findWithMinFreeSeats();
+    }
+
+    @Transactional(readOnly = true)
+    public Collection<VehicleEntity> findWithMaxFreeSeats(){
+        return vehicleRepository.findWithMaxFreeSeats();
+    }
 }

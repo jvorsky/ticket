@@ -1,6 +1,5 @@
 package org.hillel.persistence.repository;
 
-import java.util.Collection;
 import java.util.Optional;
 
 public interface GenericRepository<E, ID> {
@@ -13,5 +12,4 @@ public interface GenericRepository<E, ID> {
 
     void remove(E entity);
 
-    Collection<E> findAll();
 }

@@ -67,3 +67,11 @@ AbstractTransactionalService
 
 public Collection<E> findAll(QueryType queryType)
 ~~~~
+
+##### ДЗ 6. Paging and sorting
+
+Сделано постраничное отображение сущностей findAllJourneys, findAllVehicles, findAllStops с возможностью сортировки по полям: id, name, active.
+
+Реализован метод получения списка транспортных средств с наименьшим количеством свободных мест.
+
+Реализован метод получения списка транспортных средств с наибольшим количеством свободных мест.

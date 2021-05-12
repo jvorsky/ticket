@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -24,6 +25,8 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 @PropertySource("database.properties")
 @EnableTransactionManagement
+@EnableJpaRepositories(basePackages = {"org.hillel.persistence.jpa.repository"},
+        entityManagerFactoryRef = "emf")
 public class DatabaseConfig {
 
     @Autowired

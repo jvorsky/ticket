@@ -22,7 +22,7 @@ public class StopEntity extends AbstractModifyEntity<Long> {
     @Embedded
     private CommonInfo commonInfo;
 
-    @OneToOne(mappedBy = "stop", cascade = {CascadeType.PERSIST})
+    @OneToOne(mappedBy = "stop", cascade = {CascadeType.PERSIST}, orphanRemoval = true)
     private StopAddInfoEntity stopAddInfo;
 
     @ManyToMany(mappedBy = "stops")

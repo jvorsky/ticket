@@ -4,12 +4,14 @@ import org.hillel.persistence.entity.JourneyEntity;
 import org.hillel.persistence.entity.SeatInfoEntity;
 import org.hillel.persistence.entity.StopEntity;
 import org.hillel.persistence.entity.VehicleEntity;
+import org.hillel.persistence.jpa.repository.SimpleVehicleDto;
 import org.hillel.service.old.JourneyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -142,4 +144,30 @@ public class TicketClient {
     public Collection<VehicleEntity> findVehicleWithMaxFreeSeats(){
         return vehicleService.findWithMaxFreeSeats();
     }
+
+    public void disableById(Long id){
+        vehicleService.disableById(id);
+    }
+
+    public List<SimpleVehicleDto> listAllSimpleVehicles(){
+        return vehicleService.listAllSimpleVehicles();
+    }
+
+    public List<JourneyEntity> findAllJourneysByActiveVehicle(int pageNumber,
+                                                              int pageSize,
+                                                              String orderFieldName,
+                                                              boolean orderAsc){
+        QueryContext queryContext = new QueryContext(null, pageNumber, pageSize, orderFieldName, orderAsc);
+        return journeyService.findAllByActiveVehicle(queryContext);
+    }
+
+    public List<JourneyEntity> findAllJourneysByCreateDate(Instant date,
+                                                           int pageNumber,
+                                                           int pageSize,
+                                                           String orderFieldName,
+                                                           boolean orderAsc){
+        QueryContext queryContext = new QueryContext(null, pageNumber, pageSize, orderFieldName, orderAsc);
+        return journeyService.findAllByCreateDate(date, queryContext);
+    }
+
 }

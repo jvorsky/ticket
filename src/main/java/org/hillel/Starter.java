@@ -42,13 +42,14 @@ public class Starter {
         trainVehicle.getSeatInfos().get(0).setFreeSeats(100);
         trainVehicle = ticketClient.createOrUpdateVechicle(trainVehicle);
 
-        //System.out.println(ticketClient.findVehicleByIds(1L,2L,3L));
-        //System.out.println(ticketClient.findVehicleById(1L, true));
+        System.out.println("\nfindAllById");
+        System.out.println(ticketClient.findVehicleByIds(1L,2L,3L));
+        System.out.println("\nfindAllById with dependent");
+        System.out.println(ticketClient.findVehicleById(1L, true));
         System.out.println("\nfindAllByName");
         System.out.println(ticketClient.findAllByName("Интерсити"));
 
         // *********** УДАЛЕНИЕ ************
-/*
         // удалим информацию по транспортному средству
         trainVehicle.getSeatInfos().forEach(ticketClient::removeSeatInfo);
 
@@ -57,41 +58,43 @@ public class Starter {
 
         // удалим одну остановку
         StopEntity stop = journey.getStops().get(0);
+        System.out.println("\nУдалим одну остановку id = " + stop.getId());
         ticketClient.removeStop(stop);
 
         // удалим весь маршрут
+        System.out.println("\nУдалим весь маршрут id = " + journey.getId());
         ticketClient.removeJourneyById(journey.getId());
-*/
+
         // ***********  FIND ALL *************
         System.out.println("Поиск journey с сортировкой по id");
         System.out.println("\nQueryType.HQL");
-        System.out.println(ticketClient.findAllJourneys(QueryType.HQL, 1, 5, AbstractEntity_.ID, true));
-        System.out.println("\nQueryType.NATIVE");
-        System.out.println(ticketClient.findAllJourneys(QueryType.NATIVE, 2, 5, "id", true));
-        System.out.println("\nQueryType.CRITERIA");
-        System.out.println(ticketClient.findAllJourneys(QueryType.CRITERIA, 3, 5, AbstractEntity_.ID, true));
+        System.out.println(ticketClient.findAllJourneys(QueryType.JPQL, 0, 5, AbstractEntity_.ID, true));
 
         System.out.println("Поиск vehicle с сортировкой по id");
         System.out.println("\nQueryType.HQL");
-        System.out.println(ticketClient.findAllVehicles(QueryType.HQL, 1, 10, AbstractEntity_.ID, true));
-        System.out.println("\nQueryType.NATIVE");
-        System.out.println(ticketClient.findAllVehicles(QueryType.NATIVE, 2, 10, "id", true));
-        System.out.println("\nQueryType.CRITERIA");
-        System.out.println(ticketClient.findAllVehicles(QueryType.CRITERIA, 3, 10, AbstractEntity_.ID, true));
+        System.out.println(ticketClient.findAllVehicles(QueryType.JPQL, 0, 10, AbstractEntity_.ID, true));
 
         System.out.println("Поиск stop с сортировкой по active");
         System.out.println("\nQueryType.HQL");
-        System.out.println(ticketClient.findAllStops(QueryType.HQL, 1, 4, StopEntity_.ACTIVE, true));
-        System.out.println("\nQueryType.NATIVE");
-        System.out.println(ticketClient.findAllStops(QueryType.NATIVE, 2, 4, "active", true));
-        System.out.println("\nQueryType.CRITERIA");
-        System.out.println(ticketClient.findAllStops(QueryType.CRITERIA, 3, 4, StopEntity_.ACTIVE, true));
+        System.out.println(ticketClient.findAllStops(QueryType.JPQL, 0, 4, StopEntity_.ACTIVE, true));
 
         System.out.println("\nПолучение списка транспортных средств с наименьшим количеством свободных мест");
         System.out.println(ticketClient.findVehicleWithMinFreeSeats());
 
         System.out.println("\nПолучение списка транспортных средств с наибольшим  количеством свободных мест");
         System.out.println(ticketClient.findVehicleWithMaxFreeSeats());
+
+        ticketClient.disableById(3L);
+        //ticketClient.listAllSimpleVehicles().forEach(SimpleVehicleDto::toStr);
+
+        System.out.println("\nПоиск всех journey у которых есть активное транспортное средство");
+        System.out.println(ticketClient.findAllJourneysByActiveVehicle(
+                0, 2, JourneyEntity_.ID, true
+        ));
+
+        System.out.println("\nПоиск всех journey по дате создания");
+        System.out.println(ticketClient.findAllJourneysByCreateDate(
+                Instant.parse("2021-04-27T00:00:00.00Z"), 0, 2, JourneyEntity_.CREATE_DATE, false));
     }
 
     private static JourneyEntity buildJourney(final String from, final String to,

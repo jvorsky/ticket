@@ -2,6 +2,7 @@ package org.hillel.persistence.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.domain.Persistable;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,9 +13,14 @@ import java.io.Serializable;
 @Getter
 @Setter
 @MappedSuperclass
-public abstract class AbstractEntity<ID extends Serializable> {
+public abstract class AbstractEntity<ID extends Serializable> implements Persistable<ID> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private ID id;
+
+    @Override
+    public boolean isNew() {
+        return getId() == null;
+    }
 }

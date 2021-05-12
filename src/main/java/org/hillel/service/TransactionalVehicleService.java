@@ -1,64 +1,51 @@
 package org.hillel.service;
 
 import org.hillel.persistence.entity.VehicleEntity;
-import org.hillel.persistence.repository.VehicleRepository;
+import org.hillel.persistence.jpa.repository.SimpleVehicleDto;
+import org.hillel.persistence.jpa.repository.VehicleJpaRepository;
+import org.hillel.persistence.jpa.repository.specification.VehicleSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class TransactionalVehicleService extends AbstractTransactionalService<VehicleEntity, Long>{
 
-    private final VehicleRepository vehicleRepository;
+    private final VehicleJpaRepository vehicleRepository;
 
     @Autowired
-    private TransactionTemplate transactionTemplate;
-
-    @Autowired
-    private PlatformTransactionManager platformTransactionManager;
-
-//    @PersistenceContext
-//    private EntityManagerFactory entityManagerFactory;
-
-    @Autowired
-    public TransactionalVehicleService(VehicleRepository vehicleRepository) {
+    public TransactionalVehicleService(VehicleJpaRepository vehicleRepository) {
         super(vehicleRepository);
         this.vehicleRepository = vehicleRepository;
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public VehicleEntity createOrUpdate(VehicleEntity vehicle){
-        return vehicleRepository.createOrUpdate(vehicle);
-//        EntityManager em = entityManagerFactory.createEntityManager();
-//        em.getTransaction().begin();
-//        vehicleRepository.createOrUpdate(vehicle);
-//        em.getTransaction().commit();
-//        DefaultTransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
-//        final TransactionStatus transactionStatus = platformTransactionManager.getTransaction(transactionDefinition);
-//        VehicleEntity vehicleEntity = vehicleRepository.createOrUpdate(vehicle);
-//        platformTransactionManager.commit(transactionStatus);
-//        return vehicleEntity;
+        return vehicleRepository.save(vehicle);
     }
 
     @Transactional
     public void remove(VehicleEntity vehicle){
-        vehicleRepository.remove(vehicle);
+        vehicleRepository.findById(vehicle.getId()).ifPresent(vehicleEntity -> {
+            vehicleEntity.removeAllJourney();
+            vehicleRepository.deleteSeatInfoByVehicle(vehicleEntity);
+            vehicleRepository.delete(vehicleEntity);
+        });
     }
 
     @Transactional
     public void removeById(Long id){
-        vehicleRepository.removeById(id);
+        vehicleRepository.deleteById(id);
     }
 
     @Transactional(readOnly = true)
     public Collection<VehicleEntity> findByIds(Long... ids){
-        return vehicleRepository.findByIds(ids);
+        return vehicleRepository.findAllById(Arrays.asList(ids));
     }
 
     @Transactional(readOnly = true)
@@ -73,7 +60,21 @@ public class TransactionalVehicleService extends AbstractTransactionalService<Ve
 
     @Transactional(readOnly = true)
     public Collection<VehicleEntity> findAllByName(String name){
-        return vehicleRepository.findByName(name);
+        return vehicleRepository.findAll(VehicleSpecification.byName(name)
+                .and(VehicleSpecification.onlyActive()));
+//        Page<VehicleEntity> page = vehicleJpaRepository.findFirstByConditions(name, 0L, 20L,
+//                PageRequest.of(1, 2, Sort.by(Sort.Direction.DESC, VehicleEntity_.ID)));
+//
+//        return page.getContent();
+//        return vehicleRepository.findOnlyActive();
+//        VehicleEntity vehicle = new VehicleEntity();
+//        vehicle.setName(name);
+//        vehicle.setActive(false);
+
+//        return vehicleRepository.findAll(Example.of(vehicle));
+//        return vehicleRepository.findAll(VehicleSpecification.byName(name)
+//                .and(VehicleSpecification.onlyActive()));
+//        return vehicleRepository.findAll(VehicleSpecification.byNameAndExample(name, vehicle));
     }
 
     @Transactional(readOnly = true)
@@ -84,5 +85,15 @@ public class TransactionalVehicleService extends AbstractTransactionalService<Ve
     @Transactional(readOnly = true)
     public Collection<VehicleEntity> findWithMaxFreeSeats(){
         return vehicleRepository.findWithMaxFreeSeats();
+    }
+
+    @Transactional
+    public void disableById(Long id){
+        vehicleRepository.disableById(id);
+    }
+
+    @Transactional
+    public List<SimpleVehicleDto> listAllSimpleVehicles(){
+        return vehicleRepository.findAllByActiveIsTrue();
     }
 }

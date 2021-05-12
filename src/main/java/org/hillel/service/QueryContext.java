@@ -1,5 +1,7 @@
 package org.hillel.service;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.util.StringUtils;
 
 public class QueryContext {
@@ -55,5 +57,16 @@ public class QueryContext {
             return " order by " + orderFieldName + (orderAsc ? " asc" : " desc");
         }
         return "";
+    }
+
+    public PageRequest getPageRequest(){
+        if (StringUtils.isEmpty(getOrderFieldName())){
+            return PageRequest.of(
+                    getPageNumber(), getPageSize());
+        } else {
+            Sort.Direction direction = isOrderAsc() ? Sort.Direction.ASC : Sort.Direction.DESC;
+            return PageRequest.of(
+                    getPageNumber(), getPageSize(), Sort.by(direction, getOrderFieldName()));
+        }
     }
 }

@@ -1,27 +1,30 @@
 package org.hillel.service;
 
 import org.hillel.persistence.entity.JourneyEntity;
-import org.hillel.persistence.repository.JourneyRepository;
+import org.hillel.persistence.jpa.repository.JourneyJpaRepository;
+import org.hillel.persistence.jpa.repository.specification.JourneySpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class TransactionalJourneyService extends AbstractTransactionalService<JourneyEntity, Long> {
 
-    private final JourneyRepository journeyRepository;
+    private final JourneyJpaRepository journeyRepository;
 
     @Autowired
-    public TransactionalJourneyService(JourneyRepository journeyRepository) {
+    public TransactionalJourneyService(JourneyJpaRepository journeyRepository) {
         super(journeyRepository);
         this.journeyRepository = journeyRepository;
     }
 
     @Transactional
     public JourneyEntity createOrUpdate(final JourneyEntity entity){
-        return journeyRepository.createOrUpdate(entity);
+        return journeyRepository.save(entity);
     }
 
     @Transactional
@@ -34,14 +37,26 @@ public class TransactionalJourneyService extends AbstractTransactionalService<Jo
         return byId;
     }
 
+    @Transactional(readOnly = true)
+    public List<JourneyEntity> findAllByActiveVehicle(QueryContext queryContext){
+        return journeyRepository.findAll(
+                JourneySpecification.byActiveVehicle(), queryContext.getPageRequest()).getContent();
+    }
+
+    @Transactional(readOnly = true)
+    public List<JourneyEntity> findAllByCreateDate(Instant date, QueryContext queryContext){
+        return journeyRepository.findAll(
+                JourneySpecification.byCreateDate(date), queryContext.getPageRequest()).getContent();
+    }
+
     @Transactional
     public void removeById(Long id) {
-        journeyRepository.removeById(id);
+        journeyRepository.disableById(id);
     }
 
     @Transactional
     public void remove(JourneyEntity journey) {
-        journeyRepository.remove(journey);
+        journeyRepository.delete(journey);
     }
 
 }

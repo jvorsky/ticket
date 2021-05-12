@@ -82,6 +82,7 @@ public class JourneyEntity extends AbstractModifyEntity<Long> {
                 ", dateFrom=" + dateFrom +
                 ", dateTo=" + dateTo +
                 ", direction=" + direction +
+                ", createDate=" + getCreateDate() +
                 //", vehicle=" + vehicle +
                 '}';
     }

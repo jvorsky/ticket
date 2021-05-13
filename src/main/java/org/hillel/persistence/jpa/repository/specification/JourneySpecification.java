@@ -6,8 +6,7 @@ import org.hillel.persistence.entity.VehicleEntity_;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.Join;
-import java.time.Instant;
-import java.util.concurrent.TimeUnit;
+import java.time.*;
 
 public interface JourneySpecification {
 
@@ -18,10 +17,12 @@ public interface JourneySpecification {
         };
     }
 
-    static Specification<JourneyEntity> byCreateDate(Instant date) {
-        return (root, query, criteriaBuilder) ->
-            criteriaBuilder.between(root.get(JourneyEntity_.CREATE_DATE), date, date.plusSeconds(
-                    TimeUnit.SECONDS.convert(1, TimeUnit.DAYS)
-            ));
+    static Specification<JourneyEntity> byCreateDate(LocalDate date) {
+        return (root, query, criteriaBuilder) -> {
+            Instant start = LocalDateTime.of(date, LocalTime.MIN).toInstant(ZoneOffset.UTC);
+            Instant end = LocalDateTime.of(date, LocalTime.MAX).toInstant(ZoneOffset.UTC);
+            return criteriaBuilder.between(root.get(JourneyEntity_.CREATE_DATE), start, end);
+        };
+
     }
 }

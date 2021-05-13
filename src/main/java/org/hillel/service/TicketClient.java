@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -161,7 +161,7 @@ public class TicketClient {
         return journeyService.findAllByActiveVehicle(queryContext);
     }
 
-    public List<JourneyEntity> findAllJourneysByCreateDate(Instant date,
+    public List<JourneyEntity> findAllJourneysByCreateDate(LocalDate date,
                                                            int pageNumber,
                                                            int pageSize,
                                                            String orderFieldName,

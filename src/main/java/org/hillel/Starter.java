@@ -93,8 +93,8 @@ public class Starter {
         ));
 
         System.out.println("\nПоиск всех journey по дате создания");
-        System.out.println(ticketClient.findAllJourneysByCreateDate(
-                Instant.parse("2021-04-27T00:00:00.00Z"), 0, 2, JourneyEntity_.CREATE_DATE, false));
+        System.out.println(ticketClient.findAllJourneysByCreateDate(LocalDate.parse("2021-04-27"),
+                0, 2, JourneyEntity_.CREATE_DATE, false));
     }
 
     private static JourneyEntity buildJourney(final String from, final String to,

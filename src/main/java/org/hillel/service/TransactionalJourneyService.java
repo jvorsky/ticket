@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,7 +44,7 @@ public class TransactionalJourneyService extends AbstractTransactionalService<Jo
     }
 
     @Transactional(readOnly = true)
-    public List<JourneyEntity> findAllByCreateDate(Instant date, QueryContext queryContext){
+    public List<JourneyEntity> findAllByCreateDate(LocalDate date, QueryContext queryContext){
         return journeyRepository.findAll(
                 JourneySpecification.byCreateDate(date), queryContext.getPageRequest()).getContent();
     }

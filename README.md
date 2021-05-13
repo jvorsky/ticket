@@ -79,14 +79,15 @@ public Collection<E> findAll(QueryType queryType)
 ##### ДЗ 7. Spring Data Jpa
 
 Общий метод поиска всех сущностей с пагинацией и сортировкой
-AbstractTransactionalService.findAllAsJPQL
+
+AbstractTransactionalService.findAll(QueryContext queryCntx)
 
 Динамическая фильтрация через Specification реализована для Journey
 ~~~~
 - Поиск всех journey у которых есть активное транспортное средство
   ticketClient.findAllJourneysByActiveVehicle(0, 2, JourneyEntity_.ID, true)
 
-- Поиск всех journey по дате создания
+- Поиск всех journey по дате создания записи
   ticketClient.findAllJourneysByCreateDate(
-                Instant.parse("2021-04-27T00:00:00.00Z"), 0, 2, JourneyEntity_.CREATE_DATE, false))
+                LocalDate.parse("2021-04-27"), 0, 2, JourneyEntity_.CREATE_DATE, false))
 ~~~~

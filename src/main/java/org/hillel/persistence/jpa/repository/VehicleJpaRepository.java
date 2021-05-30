@@ -29,26 +29,22 @@ public interface VehicleJpaRepository extends
     List<SimpleVehicleDto> findAllByActiveIsTrue();
 
     // Метод получения списка транспортных средств с наименьшим количеством свободных мест
-    @Query(value = "select vehicle.* from vehicle \n" +
-            "       inner join seat_info on vehicle.id = seat_info.vehicle_id \n" +
-            "       group by vehicle.id \n" +
-            "       having sum(free_seats) = \n" +
-            "              (select min(sumFreeSeats) \n" +
-            "               from (select sum(free_seats) sumFreeSeats \n" +
-            "                     from seat_info \n" +
-            "                     group by vehicle_id) seat \n" +
-            "              )", nativeQuery = true)
+    @Query(value =
+            "select v.* " +
+            "from vehicle v " +
+            "inner join ( " +
+            "    select vehicle_id, dense_rank() over (order by sum(free_seats)) rnk from seat_info group by vehicle_id " +
+            "    ) vv on vv.vehicle_id = v.id and vv.rnk = 1",
+            nativeQuery = true)
     Collection<VehicleEntity> findWithMinFreeSeats();
 
     // Метод получения списка транспортных средств с наибольшим количеством свободных мест
-    @Query(value = "select vehicle.* from vehicle \n" +
-            "       inner join seat_info on vehicle.id = seat_info.vehicle_id \n" +
-            "       group by vehicle.id \n" +
-            "       having sum(free_seats) = \n" +
-            "              (select max(sumFreeSeats) \n" +
-            "               from (select sum(free_seats) sumFreeSeats \n" +
-            "                     from seat_info \n" +
-            "                     group by vehicle_id) seat \n" +
-            "              )", nativeQuery = true)
+    @Query(value =
+            "select v.* " +
+            "from vehicle v " +
+            "inner join ( " +
+            "    select vehicle_id, dense_rank() over (order by sum(free_seats) desc) rnk from seat_info group by vehicle_id " +
+            "    ) vv on vv.vehicle_id = v.id and vv.rnk = 1",
+            nativeQuery = true)
     Collection<VehicleEntity> findWithMaxFreeSeats();
 }

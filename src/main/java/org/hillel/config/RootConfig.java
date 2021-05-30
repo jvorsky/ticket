@@ -1,9 +1,5 @@
 package org.hillel.config;
 
-import org.hillel.service.old.InMemoryJourneyServiceImpl;
-import org.hillel.service.old.JourneyService;
-import org.hillel.service.old.StubJourneyServiceImpl;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -18,14 +14,14 @@ public class RootConfig {
 //        return new TicketClient();
 //    }
 
-    @Bean("inMemoryJourneyService")
-    public JourneyService getMemoryJourneyService(){
-        return new InMemoryJourneyServiceImpl();
-    }
-
-    @Bean("stubJourneyService")
-    public JourneyService stubJourneyService(){
-        return new StubJourneyServiceImpl();
-    }
+//    @Bean("inMemoryJourneyService")
+//    public JourneyService getMemoryJourneyService(){
+//        return new InMemoryJourneyServiceImpl();
+//    }
+//
+//    @Bean("stubJourneyService")
+//    public JourneyService stubJourneyService(){
+//        return new StubJourneyServiceImpl();
+//    }
 
 }

@@ -5,7 +5,6 @@ import org.hillel.persistence.entity.SeatInfoEntity;
 import org.hillel.persistence.entity.StopEntity;
 import org.hillel.persistence.entity.VehicleEntity;
 import org.hillel.persistence.jpa.repository.SimpleVehicleDto;
-import org.hillel.service.old.JourneyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -18,9 +17,6 @@ import java.util.Optional;
 
 @Component
 public class TicketClient {
-
-    @Autowired
-    private List<JourneyService> journeyServices;
 
     @Autowired
     private TransactionalJourneyService journeyService;

@@ -29,8 +29,7 @@ public abstract class AbstractTransactionalService<E extends AbstractEntity<ID>,
         }
     }
 
-    @Transactional(readOnly = true)
-    public Collection<E> findAllAsJPQL(QueryContext queryCntx){
+    private Collection<E> findAllAsJPQL(QueryContext queryCntx){
         return repository.findAll(queryCntx.getPageRequest()).getContent();
     }
 

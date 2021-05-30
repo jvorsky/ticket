@@ -64,34 +64,4 @@ public class VehicleRepository extends CommonRepository<VehicleEntity, Long> {
 //                .getResultList();
     }
 
-    // Метод получения списка транспортных средств с наименьшим количеством свободных мест
-    public Collection<VehicleEntity> findWithMinFreeSeats(){
-        return entityManager.createNativeQuery(
-                        "select vehicle.* " +
-                        "from vehicle " +
-                        "inner join seat_info on vehicle.id = seat_info.vehicle_id " +
-                        "group by vehicle.id " +
-                        "having sum(free_seats) = " +
-                        "       (select min(sumFreeSeats) " +
-                        "        from (select sum(free_seats) sumFreeSeats " +
-                        "              from seat_info " +
-                        "              group by vehicle_id) seat " +
-                        "       )", VehicleEntity.class).getResultList();
-    }
-
-    // Метод получения списка транспортных средств с наименьшим количеством свободных мест
-    public Collection<VehicleEntity> findWithMaxFreeSeats(){
-        return entityManager.createNativeQuery(
-                "select vehicle.* " +
-                        "from vehicle " +
-                        "inner join seat_info on vehicle.id = seat_info.vehicle_id " +
-                        "group by vehicle.id " +
-                        "having sum(free_seats) = " +
-                        "       (select max(sumFreeSeats) " +
-                        "        from (select sum(free_seats) sumFreeSeats " +
-                        "              from seat_info " +
-                        "              group by vehicle_id) seat " +
-                        "       )", VehicleEntity.class).getResultList();
-    }
-
 }

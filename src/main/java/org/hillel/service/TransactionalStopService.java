@@ -8,8 +8,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-
 @Service
 public class TransactionalStopService extends AbstractTransactionalService<StopEntity> {
 
@@ -36,13 +34,7 @@ public class TransactionalStopService extends AbstractTransactionalService<StopE
 
     @Override
     protected Specification<StopEntity> getSpecification(String filterKey, String filterValue) {
-        if ("Name".equals(filterKey)){
-            return StopSpecification.byName(filterValue);
-        } else if ("CreateDate".equals(filterKey)){
-            return StopSpecification.byCreateDate(LocalDate.parse(filterValue));
-        } else {
-            return super.getSpecification(filterKey, filterValue);
-        }
+        return StopSpecification.valueOf(filterKey).getSpecification(filterValue);
     }
 
 }

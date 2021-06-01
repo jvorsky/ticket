@@ -9,7 +9,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -62,8 +61,8 @@ public class TransactionalVehicleService extends AbstractTransactionalService<Ve
 
     @Transactional(readOnly = true)
     public Collection<VehicleEntity> findAllByName(String name){
-        return vehicleRepository.findAll(VehicleSpecification.byName(name)
-                .and(VehicleSpecification.onlyActive()));
+        return vehicleRepository.findAll(VehicleSpecification.NAME.getSpecification(name)
+                .and(VehicleSpecification.ONLY_ACTIVE.getSpecification(null)));
 //        Page<VehicleEntity> page = vehicleJpaRepository.findFirstByConditions(name, 0L, 20L,
 //                PageRequest.of(1, 2, Sort.by(Sort.Direction.DESC, VehicleEntity_.ID)));
 //
@@ -101,15 +100,7 @@ public class TransactionalVehicleService extends AbstractTransactionalService<Ve
 
     @Override
     protected Specification<VehicleEntity> getSpecification(String filterKey, String filterValue) {
-        if ("ID".equals(filterKey)){
-            return VehicleSpecification.byId(Long.valueOf(filterValue));
-        } else if ("Name".equals(filterKey)){
-            return VehicleSpecification.byName(filterValue);
-        } else if ("CreateDate".equals(filterKey)){
-            return VehicleSpecification.byCreateDate(LocalDate.parse(filterValue));
-        } else {
-            return super.getSpecification(filterKey, filterValue);
-        }
+        return VehicleSpecification.valueOf(filterKey).getSpecification(filterValue);
     }
 
 }

@@ -3,6 +3,9 @@ package org.hillel;
 import org.hillel.config.RootConfig;
 import org.hillel.persistence.entity.*;
 import org.hillel.persistence.entity.enums.DirectionType;
+import org.hillel.persistence.jpa.repository.specification.JourneySpecification;
+import org.hillel.persistence.jpa.repository.specification.StopSpecification;
+import org.hillel.persistence.jpa.repository.specification.VehicleSpecification;
 import org.hillel.service.TicketClient;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -74,16 +77,20 @@ public class Starter {
 
         // ***********  FIND ALL *************
         System.out.println("\nПоиск journey с сортировкой по дате отправления и фильтром по полю StationFrom");
-        System.out.println(ticketClient.findAllJourneys(0, 5, JourneyEntity_.DATE_FROM, false, "StationFrom", "Odessa"));
+        System.out.println(ticketClient.findAllJourneys(
+                0, 5, JourneyEntity_.DATE_FROM, false, JourneySpecification.STATION_FROM.name(), "Odessa"));
 
         System.out.println("\nПоиск journey с сортировкой по Id у которых есть активное транспортное средство");
-        System.out.println(ticketClient.findAllJourneys(0, 2, JourneyEntity_.ID, true, "ActiveVehicle", null));
+        System.out.println(ticketClient.findAllJourneys(
+                0, 2, JourneyEntity_.ID, true, JourneySpecification.ACTIVE_VEHICLE.name(), null));
 
         System.out.println("\nПоиск vehicle с сортировкой по Id и фильтром по дате создания");
-        System.out.println(ticketClient.findAllVehicles(0, 10, AbstractEntity_.ID, true, "CreateDate", "2021-04-27"));
+        System.out.println(ticketClient.findAllVehicles(
+                0, 10, AbstractEntity_.ID, true, VehicleSpecification.CREATE_DATE.name(), "2021-04-27"));
 
         System.out.println("\nПоиск stop с сортировкой по дате создания и фильтром по имени остановки");
-        System.out.println(ticketClient.findAllStops(0, 4, StopEntity_.CREATE_DATE, false, "Name", "Подольск"));
+        System.out.println(ticketClient.findAllStops(
+                0, 4, StopEntity_.CREATE_DATE, false, StopSpecification.NAME.name(), "Подольск"));
 
     }
 

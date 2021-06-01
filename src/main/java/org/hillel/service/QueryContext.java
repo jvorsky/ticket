@@ -6,30 +6,29 @@ import org.springframework.util.StringUtils;
 
 public class QueryContext {
 
-    private QueryType queryType;
     private int pageNumber;
     private int pageSize;
     private String orderFieldName;
     private boolean orderAsc;
+    private String filterKey;
+    private String filterValue;
 
     /**
-     *  @param queryType - тип запроса
      * @param pageNumber - номер страницы
      * @param pageSize - кол-во элементов на странице
      * @param orderFieldName - название поля для сортировки
      * @param orderAsc - напрвление сортировки
+     * @param filterKey - код фильтра
+     * @param filterValue - значение фильтра
      */
-    public QueryContext(QueryType queryType, int pageNumber, int pageSize,
-                        String orderFieldName, boolean orderAsc) {
-        this.queryType = queryType;
+    public QueryContext(int pageNumber, int pageSize, String orderFieldName, boolean orderAsc,
+                        String filterKey, String filterValue) {
         this.pageNumber = pageNumber;
         this.pageSize = pageSize;
         this.orderFieldName = orderFieldName;
         this.orderAsc = orderAsc;
-    }
-
-    public QueryType getQueryType() {
-        return queryType;
+        this.filterKey = filterKey;
+        this.filterValue = filterValue;
     }
 
     public int getPageNumber() {
@@ -46,6 +45,14 @@ public class QueryContext {
 
     public boolean isOrderAsc() {
         return orderAsc;
+    }
+
+    public String getFilterKey() {
+        return filterKey;
+    }
+
+    public String getFilterValue() {
+        return filterValue;
     }
 
     public int getFirstResult(){

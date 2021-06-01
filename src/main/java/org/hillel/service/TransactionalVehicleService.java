@@ -5,16 +5,18 @@ import org.hillel.persistence.jpa.repository.SimpleVehicleDto;
 import org.hillel.persistence.jpa.repository.VehicleJpaRepository;
 import org.hillel.persistence.jpa.repository.specification.VehicleSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class TransactionalVehicleService extends AbstractTransactionalService<VehicleEntity, Long>{
+public class TransactionalVehicleService extends AbstractTransactionalService<VehicleEntity>{
 
     private final VehicleJpaRepository vehicleRepository;
 
@@ -96,4 +98,18 @@ public class TransactionalVehicleService extends AbstractTransactionalService<Ve
     public List<SimpleVehicleDto> listAllSimpleVehicles(){
         return vehicleRepository.findAllByActiveIsTrue();
     }
+
+    @Override
+    protected Specification<VehicleEntity> getSpecification(String filterKey, String filterValue) {
+        if ("ID".equals(filterKey)){
+            return VehicleSpecification.byId(Long.valueOf(filterValue));
+        } else if ("Name".equals(filterKey)){
+            return VehicleSpecification.byName(filterValue);
+        } else if ("CreateDate".equals(filterKey)){
+            return VehicleSpecification.byCreateDate(LocalDate.parse(filterValue));
+        } else {
+            return super.getSpecification(filterKey, filterValue);
+        }
+    }
+
 }

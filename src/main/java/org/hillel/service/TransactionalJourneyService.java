@@ -4,6 +4,7 @@ import org.hillel.persistence.entity.JourneyEntity;
 import org.hillel.persistence.jpa.repository.JourneyJpaRepository;
 import org.hillel.persistence.jpa.repository.specification.JourneySpecification;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class TransactionalJourneyService extends AbstractTransactionalService<JourneyEntity, Long> {
+public class TransactionalJourneyService extends AbstractTransactionalService<JourneyEntity> {
 
     private final JourneyJpaRepository journeyRepository;
 
@@ -59,4 +60,18 @@ public class TransactionalJourneyService extends AbstractTransactionalService<Jo
         journeyRepository.delete(journey);
     }
 
+    @Override
+    protected Specification<JourneyEntity> getSpecification(String filterKey, String filterValue) {
+        if ("StationFrom".equals(filterKey)){
+            return JourneySpecification.byStationFrom(filterValue);
+        } else if ("StationTo".equals(filterKey)){
+            return JourneySpecification.byStationTo(filterValue);
+        } else if ("CreateDate".equals(filterKey)){
+            return JourneySpecification.byCreateDate(LocalDate.parse(filterValue));
+        } else if ("ActiveVehicle".equals(filterKey)){
+            return JourneySpecification.byActiveVehicle();
+        } else {
+            return super.getSpecification(filterKey, filterValue);
+        }
+    }
 }

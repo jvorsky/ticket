@@ -19,10 +19,19 @@ public interface JourneySpecification {
 
     static Specification<JourneyEntity> byCreateDate(LocalDate date) {
         return (root, query, criteriaBuilder) -> {
-            Instant start = LocalDateTime.of(date, LocalTime.MIN).toInstant(ZoneOffset.UTC);
-            Instant end = LocalDateTime.of(date, LocalTime.MAX).toInstant(ZoneOffset.UTC);
+            Instant start = LocalDateTime.of(date, LocalTime.MIN).atZone(ZoneId.systemDefault()).toInstant();
+            Instant end = LocalDateTime.of(date, LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant();
             return criteriaBuilder.between(root.get(JourneyEntity_.CREATE_DATE), start, end);
         };
+    }
 
+    static Specification<JourneyEntity> byStationFrom(final String stationFrom){
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get(JourneyEntity_.STATION_FROM), criteriaBuilder.literal(stationFrom));
+    }
+
+    static Specification<JourneyEntity> byStationTo(final String stationTo){
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get(JourneyEntity_.STATION_TO), criteriaBuilder.literal(stationTo));
     }
 }

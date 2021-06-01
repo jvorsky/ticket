@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class TransactionalSeatInfoService extends AbstractTransactionalService<SeatInfoEntity, Long> {
+public class TransactionalSeatInfoService extends AbstractTransactionalService<SeatInfoEntity> {
 
     private final SeatInfoJpaRepository seatInfoRepository;
 

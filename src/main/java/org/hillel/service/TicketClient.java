@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -99,37 +98,41 @@ public class TicketClient {
         return vehicleService.findAllByName(name);
     }
 
-    public Collection<JourneyEntity> findAllJourneys(QueryType queryType,
-                                                     int pageNumber,
+    public Collection<JourneyEntity> findAllJourneys(int pageNumber,
                                                      int pageSize,
                                                      String orderFieldName,
-                                                     boolean orderAsc){
-        QueryContext queryContext = new QueryContext(queryType, pageNumber, pageSize, orderFieldName, orderAsc);
+                                                     boolean orderAsc,
+                                                     String filterKey,
+                                                     String filterValue){
+        QueryContext queryContext = new QueryContext(pageNumber, pageSize, orderFieldName, orderAsc, filterKey, filterValue);
         return journeyService.findAll(queryContext);
     }
-    public Collection<SeatInfoEntity> findAllSeatInfos(QueryType queryType,
-                                                       int pageNumber,
+    public Collection<SeatInfoEntity> findAllSeatInfos(int pageNumber,
                                                        int pageSize,
                                                        String orderFieldName,
-                                                       boolean orderAsc){
-        QueryContext queryContext = new QueryContext(queryType, pageNumber, pageSize, orderFieldName, orderAsc);
+                                                       boolean orderAsc,
+                                                       String filterKey,
+                                                       String filterValue){
+        QueryContext queryContext = new QueryContext(pageNumber, pageSize, orderFieldName, orderAsc, filterKey, filterValue);
         return seatInfoService.findAll(queryContext);
     }
-    public Collection<StopEntity> findAllStops(QueryType queryType,
-                                               int pageNumber,
+    public Collection<StopEntity> findAllStops(int pageNumber,
                                                int pageSize,
                                                String orderFieldName,
-                                               boolean orderAsc){
-        QueryContext queryContext = new QueryContext(queryType, pageNumber, pageSize, orderFieldName, orderAsc);
+                                               boolean orderAsc,
+                                               String filterKey,
+                                               String filterValue){
+        QueryContext queryContext = new QueryContext(pageNumber, pageSize, orderFieldName, orderAsc, filterKey, filterValue);
         return stopService.findAll(queryContext);
     }
 
-    public Collection<VehicleEntity> findAllVehicles(QueryType queryType,
-                                                     int pageNumber,
+    public Collection<VehicleEntity> findAllVehicles(int pageNumber,
                                                      int pageSize,
                                                      String orderFieldName,
-                                                     boolean orderAsc){
-        QueryContext queryContext = new QueryContext(queryType, pageNumber, pageSize, orderFieldName, orderAsc);
+                                                     boolean orderAsc,
+                                                     String filterKey,
+                                                     String filterValue){
+        QueryContext queryContext = new QueryContext(pageNumber, pageSize, orderFieldName, orderAsc, filterKey, filterValue);
         return vehicleService.findAll(queryContext);
     }
 
@@ -147,23 +150,6 @@ public class TicketClient {
 
     public List<SimpleVehicleDto> listAllSimpleVehicles(){
         return vehicleService.listAllSimpleVehicles();
-    }
-
-    public List<JourneyEntity> findAllJourneysByActiveVehicle(int pageNumber,
-                                                              int pageSize,
-                                                              String orderFieldName,
-                                                              boolean orderAsc){
-        QueryContext queryContext = new QueryContext(null, pageNumber, pageSize, orderFieldName, orderAsc);
-        return journeyService.findAllByActiveVehicle(queryContext);
-    }
-
-    public List<JourneyEntity> findAllJourneysByCreateDate(LocalDate date,
-                                                           int pageNumber,
-                                                           int pageSize,
-                                                           String orderFieldName,
-                                                           boolean orderAsc){
-        QueryContext queryContext = new QueryContext(null, pageNumber, pageSize, orderFieldName, orderAsc);
-        return journeyService.findAllByCreateDate(date, queryContext);
     }
 
 }

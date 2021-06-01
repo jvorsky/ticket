@@ -3,7 +3,6 @@ package org.hillel;
 import org.hillel.config.RootConfig;
 import org.hillel.persistence.entity.*;
 import org.hillel.persistence.entity.enums.DirectionType;
-import org.hillel.service.QueryType;
 import org.hillel.service.TicketClient;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -65,19 +64,6 @@ public class Starter {
         System.out.println("\nУдалим весь маршрут id = " + journey.getId());
         ticketClient.removeJourneyById(journey.getId());
 
-        // ***********  FIND ALL *************
-        System.out.println("Поиск journey с сортировкой по id");
-        System.out.println("\nQueryType.HQL");
-        System.out.println(ticketClient.findAllJourneys(QueryType.JPQL, 0, 5, AbstractEntity_.ID, true));
-
-        System.out.println("Поиск vehicle с сортировкой по id");
-        System.out.println("\nQueryType.HQL");
-        System.out.println(ticketClient.findAllVehicles(QueryType.JPQL, 0, 10, AbstractEntity_.ID, true));
-
-        System.out.println("Поиск stop с сортировкой по active");
-        System.out.println("\nQueryType.HQL");
-        System.out.println(ticketClient.findAllStops(QueryType.JPQL, 0, 4, StopEntity_.ACTIVE, true));
-
         System.out.println("\nПолучение списка транспортных средств с наименьшим количеством свободных мест");
         System.out.println(ticketClient.findVehicleWithMinFreeSeats());
 
@@ -85,16 +71,20 @@ public class Starter {
         System.out.println(ticketClient.findVehicleWithMaxFreeSeats());
 
         ticketClient.disableById(3L);
-        //ticketClient.listAllSimpleVehicles().forEach(SimpleVehicleDto::toStr);
 
-        System.out.println("\nПоиск всех journey у которых есть активное транспортное средство");
-        System.out.println(ticketClient.findAllJourneysByActiveVehicle(
-                0, 2, JourneyEntity_.ID, true
-        ));
+        // ***********  FIND ALL *************
+        System.out.println("\nПоиск journey с сортировкой по дате отправления и фильтром по полю StationFrom");
+        System.out.println(ticketClient.findAllJourneys(0, 5, JourneyEntity_.DATE_FROM, false, "StationFrom", "Odessa"));
 
-        System.out.println("\nПоиск всех journey по дате создания");
-        System.out.println(ticketClient.findAllJourneysByCreateDate(LocalDate.parse("2021-04-27"),
-                0, 2, JourneyEntity_.CREATE_DATE, false));
+        System.out.println("\nПоиск journey с сортировкой по Id у которых есть активное транспортное средство");
+        System.out.println(ticketClient.findAllJourneys(0, 2, JourneyEntity_.ID, true, "ActiveVehicle", null));
+
+        System.out.println("\nПоиск vehicle с сортировкой по Id и фильтром по дате создания");
+        System.out.println(ticketClient.findAllVehicles(0, 10, AbstractEntity_.ID, true, "CreateDate", "2021-04-27"));
+
+        System.out.println("\nПоиск stop с сортировкой по дате создания и фильтром по имени остановки");
+        System.out.println(ticketClient.findAllStops(0, 4, StopEntity_.CREATE_DATE, false, "Name", "Подольск"));
+
     }
 
     private static JourneyEntity buildJourney(final String from, final String to,

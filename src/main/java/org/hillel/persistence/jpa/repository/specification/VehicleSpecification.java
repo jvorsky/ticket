@@ -1,5 +1,6 @@
 package org.hillel.persistence.jpa.repository.specification;
 
+import org.hillel.persistence.entity.AbstractEntity_;
 import org.hillel.persistence.entity.VehicleEntity;
 import org.hillel.persistence.entity.VehicleEntity_;
 import org.springframework.data.domain.Example;
@@ -7,6 +8,7 @@ import org.springframework.data.jpa.convert.QueryByExamplePredicateBuilder;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.Predicate;
+import java.time.*;
 
 public interface VehicleSpecification {
 
@@ -27,5 +29,18 @@ public interface VehicleSpecification {
         return (root, query, criteriaBuilder)->
                 criteriaBuilder.isTrue(root.get(VehicleEntity_.ACTIVE));
 
+    }
+
+    static Specification<VehicleEntity> byId(final Long id){
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get(AbstractEntity_.ID), criteriaBuilder.literal(id));
+    }
+
+    static Specification<VehicleEntity> byCreateDate(LocalDate date) {
+        return (root, query, criteriaBuilder) -> {
+            Instant start = LocalDateTime.of(date, LocalTime.MIN).atZone(ZoneId.systemDefault()).toInstant();
+            Instant end = LocalDateTime.of(date, LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant();
+            return criteriaBuilder.between(root.get(VehicleEntity_.CREATE_DATE), start, end);
+        };
     }
 }

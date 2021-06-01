@@ -78,16 +78,18 @@ public Collection<E> findAll(QueryType queryType)
 
 ##### ДЗ 7. Spring Data Jpa
 
-Общий метод поиска всех сущностей с пагинацией и сортировкой
+Общий метод поиска всех сущностей с пагинацией, сортировкой и динамической фильтрации через Specification:
 
 AbstractTransactionalService.findAll(QueryContext queryCntx)
 
-Динамическая фильтрация через Specification реализована для Journey
-~~~~
-- Поиск всех journey у которых есть активное транспортное средство
-  ticketClient.findAllJourneysByActiveVehicle(0, 2, JourneyEntity_.ID, true)
+        System.out.println("\nПоиск journey с сортировкой по дате отправления и фильтром по полю StationFrom");
+        System.out.println(ticketClient.findAllJourneys(0, 5, JourneyEntity_.DATE_FROM, false, "StationFrom", "Odessa"));
 
-- Поиск всех journey по дате создания записи
-  ticketClient.findAllJourneysByCreateDate(
-                LocalDate.parse("2021-04-27"), 0, 2, JourneyEntity_.CREATE_DATE, false))
-~~~~
+        System.out.println("\nПоиск journey с сортировкой по Id у которых есть активное транспортное средство");
+        System.out.println(ticketClient.findAllJourneys(0, 2, JourneyEntity_.ID, true, "ActiveVehicle", null));
+
+        System.out.println("\nПоиск vehicle с сортировкой по Id и фильтром по дате создания");
+        System.out.println(ticketClient.findAllVehicles(0, 10, AbstractEntity_.ID, true, "CreateDate", "2021-04-27"));
+
+        System.out.println("\nПоиск stop с сортировкой по дате создания и фильтром по имени остановки");
+        System.out.println(ticketClient.findAllStops(0, 4, StopEntity_.CREATE_DATE, false, "Name", "Подольск"));
